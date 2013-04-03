@@ -4,4 +4,5 @@ Cookbooks
 =========
 
 * `dev-template` - Baseline configuration for all nodes.
+* `meniscus` - Meniscus components. Default recipe installs worker prerequisites.
 * `mmongo` - MongoDB configuration for data store nodes.
