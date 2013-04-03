@@ -1,3 +1,12 @@
 [submodule "cookbooks/apt"]
 	path = cookbooks/apt
 	url = git@github.com:opscode-cookbooks/apt.git
+[submodule "cookbooks/python"]
+	path = cookbooks/python
+	url = git@github.com:opscode-cookbooks/python.git
+[submodule "cookbooks/build-essential"]
+	path = cookbooks/build-essential
+	url = git@github.com:opscode-cookbooks/build-essential.git
+[submodule "cookbooks/yum"]
+	path = cookbooks/yum
+	url = git@github.com:opscode-cookbooks/yum.git
