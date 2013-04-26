@@ -151,9 +151,6 @@ else
       db = client.db('admin')
       db.command(cmd)
 
-      db.add_user("test","test")
-
-
     end
   end
 
