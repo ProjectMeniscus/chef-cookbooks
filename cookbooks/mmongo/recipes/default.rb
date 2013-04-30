@@ -47,19 +47,18 @@ end
 template "/etc/mongodb.conf" do
   source "mongodb.conf.erb"
   variables(
-  	:mmongo => node[:mmongo]
+  	:mmongo => node[:mmongo],
+    :auth => false
   )
+
+  notifies :restart, "service[mongodb]", :immediately
 end
 
-service "mongodb" do
-  action :restart
-end
+#service "mongodb" do
+#  action :restart
+#end
 
 chef_gem "mongo" do
-  action :install
-end
-
-chef_gem "bson_ext" do
   action :install
 end
 
@@ -114,11 +113,11 @@ if db_nodes.empty?
       
       admin_credentials = data_bag_item("mongo_users", "admin")
       db = client.db('admin')
-      db.add_user(admin_credentials["user"],admin_credentials["pass"])
+      db.add_user(admin_credentials["user"], admin_credentials["pass"])
 
       db = client.db('test')
       test_credentials = data_bag_item("mongo_users", "test")
-      db.add_user(test_credentials["user"],test_credentials["pass"])
+      db.add_user(test_credentials["user"], test_credentials["pass"])
  
     end
   end
@@ -136,7 +135,12 @@ else
       client = Mongo::MongoReplicaSetClient.new([
                    [ repl_node[:ipaddress], 
                      repl_node[:mmongo][:port] ].join(':')
-               ])      
+               ])
+
+      admin_credentials = data_bag_item("mongo_users", "admin")
+      client.add_auth("admin", admin_credentials["user"], admin_credentials["pass"])
+      client.apply_saved_authentication()
+
       if !client.primary?
         primary = client.primary
         client = Mongo::MongoReplicaSetClient.new(["#{primary.join(':')}"])
@@ -156,18 +160,10 @@ else
 
 end
 
-ruby_block "add auth to mongo conf" do
-  block do
-    mongo_conf = Chef::Util::FileEdit.new('/etc/mongodb.conf')
-    mongo_conf.insert_line_if_no_match("#authentication", "\n#authentication")
-    mongo_conf.write_file
-    mongo_conf.search_file_replace_line("auth = false", "auth = true")
-    mongo_conf.write_file
-    mongo_conf.insert_line_if_no_match("auth = true", "auth = true")
-    mongo_conf.write_file
-  end
-end
-
-service "mongodb" do
-  action :restart
+template "/etc/mongodb.conf" do
+  source "mongodb.conf.erb"
+  variables(
+    :mmongo => node[:mmongo],
+    :auth => true
+  )
 end
