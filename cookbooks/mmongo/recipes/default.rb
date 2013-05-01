@@ -44,38 +44,63 @@ package "mongodb-10gen" do
   action :install
 end
 
-template "/etc/mongodb.conf" do
-  source "mongodb.conf.erb"
-  variables(
-  	:mmongo => node[:mmongo],
-    :auth => false
-  )
-
-  notifies :restart, "service[mongodb]", :immediately
-end
-
-#service "mongodb" do
-#  action :restart
-#end
-
 chef_gem "mongo" do
   action :install
+end
+
+keyfile = data_bag_item("mongo_users", "key")
+key = keyfile["key"]
+
+template node[:mmongo][:keyfile] do
+    source "keyfile.erb"
+    owner "mongodb"
+    mode "0600"
+    variables(
+      :key => key
+    )
 end
 
 #searching for existing nodes in replset, only possible with Chef Server, not with Chef Solo
 if Chef::Config[:solo]
   Chef::Log.warn("This recipe requires Chef Server to join replsets. This node will start as new replset")
   db_nodes = []
+  db_ip = []
 else
   db_nodes = search(:node, "mmongo_replset_name:#{node[:mmongo][:replset_name]}")
+  db_ip = []
+  db_nodes.each do |db_node|
+    db_ip.push(db_node[:ipaddress])
+  end
+
 end
 
-execute "wait" do
-  command "sleep 20;"
-  action :run
-end
 
 if db_nodes.empty?
+
+  template "/etc/mongodb.conf" do
+    source "mongodb.conf.erb"
+    variables(
+      :mmongo => node[:mmongo]
+    )
+
+  end
+
+  ruby_block "remove auth from conf" do
+    block do
+      rules = Chef::Util::FileEdit.new('/etc/mongodb.conf')
+      rules.search_file_delete_line('keyFile')
+      rules.write_file
+    end
+  end
+
+  service "mongodb" do
+    action :restart
+  end
+
+  execute "wait" do
+    command "sleep 20;"
+    action :run
+  end
 
   ruby_block 'initialize replset' do
     block do
@@ -106,10 +131,7 @@ if db_nodes.empty?
       require 'mongo'
 
       Chef::Log.debug("Adding users")
-      client = Mongo::MongoReplicaSetClient.new([
-                   [node[:ipaddress], 
-                     node[:mmongo][:port] ].join(':')
-               ])  
+      client = Mongo::MongoClient.new('localhost', node[:mmongo][:port])  
       
       admin_credentials = data_bag_item("mongo_users", "admin")
       db = client.db('admin')
@@ -118,11 +140,40 @@ if db_nodes.empty?
       db = client.db('test')
       test_credentials = data_bag_item("mongo_users", "test")
       db.add_user(test_credentials["user"], test_credentials["pass"])
- 
+
     end
   end
 
-else
+  template "/etc/mongodb.conf" do
+    source "mongodb.conf.erb"
+    variables(
+      :mmongo => node[:mmongo]
+    )
+
+  end
+
+  service "mongodb" do
+    action :restart
+  end
+
+elsif not db_ip.include? node[:ipaddress]
+
+  template "/etc/mongodb.conf" do
+    source "mongodb.conf.erb"
+    variables(
+      :mmongo => node[:mmongo]
+    )
+
+  end
+
+  service "mongodb" do
+    action :restart
+  end
+
+  execute "wait" do
+    command "sleep 20;"
+    action :run
+  end
 
   ruby_block 'join replset' do
     block do
@@ -158,12 +209,4 @@ else
     end
   end
 
-end
-
-template "/etc/mongodb.conf" do
-  source "mongodb.conf.erb"
-  variables(
-    :mmongo => node[:mmongo],
-    :auth => true
-  )
 end
