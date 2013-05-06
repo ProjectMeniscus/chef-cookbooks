@@ -29,18 +29,34 @@ include_recipe "python::pip"
   end
 end
 
-remote_file "/tmp/meniscus_0.1.302-1_all.deb" do
-  source "http://50.56.176.80:8000/meniscus_0.1.302-1_all.deb"
-  notifies :run, "bash[install_program]", :immediately
+#remote_file "/tmp/meniscus_0.1.302-1_all.deb" do
+#  source "http://50.56.176.80:8000/meniscus_0.1.302-1_all.deb"
+#  notifies :run, "bash[install_program]", :immediately
+#end
+
+#bash "install_program" do
+#  user "root"
+#  cwd "/tmp"
+#  code <<-EOH
+#    dpkg -i /tmp/meniscus_0.1.302-1_all.deb
+#  EOH
+#  action :nothing
+#end
+
+apt_repository "ProjectMeniscus" do
+  uri "http://198.61.162.39"
+  distribution "squeeze"
+  components ["main"]
 end
 
-bash "install_program" do
-  user "root"
-  cwd "/tmp"
-  code <<-EOH
-    dpkg -i /tmp/meniscus_0.1.302-1_all.deb
-  EOH
-  action :nothing
+execute "apt-get update" do
+  command "apt-get update"
+  action :run
+end
+
+package "meniscus" do
+  action :install
+  options "--force-yes"
 end
 
 ruby_block "edit iptables.rules" do
@@ -61,7 +77,11 @@ bash "iptables-restore" do
   action :nothing
 end
 
-ENV["WORKER_PERSONA"] ="meniscus.personas.cbootstrap.app"
+if node[:meniscus][:personality] == "cbootstrap"
+  ENV["WORKER_PERSONA"] ="meniscus.personas.cbootstrap.app"
+  puts "SETTING ENVIRONMENT VARIABLE"
+end
+
 
 if ["cbootstrap", "coordinator"].include? node[:meniscus][:personality]
 	db_nodes = search(:node, "mmongo_replset_name:rs0")
@@ -81,10 +101,38 @@ end
 template "/etc/meniscus/meniscus.conf" do
     source "meniscus.conf.erb"
     variables(
-      :mongo_servers => "198.61.167.194:27017"
+      :mongo_servers => db_ip.join(',')
     )
 end
 
 service "meniscus" do
 	action :restart
+end
+
+
+chef_gem "json" do
+  action :install
+end
+
+ruby_block "post configuration" do
+  block do
+    require 'rubygems'
+    require 'net/http'
+    require 'json'
+    
+    body = {
+      "api_secret" => "87188ab51cdhg6efeeee",
+      "coordinator_uri"  =>  "http://#{node[:ipaddress]}:#{node[:meniscus][:port]}/v1",
+      "personality"  =>  "coordinator"
+    }.to_json
+
+    print body
+
+    req = Net::HTTP::Post.new("/v1/pairing/configure", initheader = {'Content-Type' =>'application/json'})
+    req.body = body
+    response = Net::HTTP.new(node[:ipaddress], node[:meniscus][:port]).start {|http| http.request(req) }
+    puts "Response #{response.code} #{response.message}:
+          #{response.body}"
+
+  end
 end
