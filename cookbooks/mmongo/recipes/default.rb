@@ -40,6 +40,14 @@ ruby_block "edit iptables.rules" do
   end
 end
 
+bash "iptables-restore" do
+  user "root"
+  code <<-EOH
+    iptables-restore /etc/iptables.rules
+  EOH
+  action :nothing
+end
+
 package "mongodb-10gen" do
   action :install
 end

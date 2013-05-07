@@ -1,0 +1,18 @@
+# Default Meniscus Config File
+
+[datasource]
+handler_name = mongodb
+
+[mongodb]
+mongo_servers = <%= @mongo_servers %>
+database = test
+username = test
+password = test
+
+[cache]
+default_expires = 900
+config_expires = 0
+cache_config = 'cache-config'
+cache_tenant = 'cache-tenant'
+cache_token = 'cache-token'
+cache_broadcast = 'cache-broadcast'
