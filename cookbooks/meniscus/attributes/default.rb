@@ -1,3 +1,5 @@
 default[:meniscus][:personality] = "cbootstrap"
 default[:meniscus][:cluster_name] = "meniscus"
 default[:meniscus][:port] = "8080"
+default[:meniscus][:syslog_port] = "5140"
+default[:meniscus][:json_stream_port] = "9001"

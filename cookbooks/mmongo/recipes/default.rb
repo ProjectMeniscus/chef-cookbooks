@@ -18,7 +18,7 @@
 #
 
 apt_repository "10gen" do
-  uri "http://downloads-distro.mongodb.org/repo/debian-sysvinit"
+  uri "http://downloads-distro.mongodb.org/repo/ubuntu-upstart"
   distribution "dist"
   components ["10gen"]
   keyserver "keyserver.ubuntu.com"
@@ -45,7 +45,7 @@ bash "iptables-restore" do
   code <<-EOH
     iptables-restore /etc/iptables.rules
   EOH
-  action :nothing
+  action :run
 end
 
 package "mongodb-10gen" do
@@ -85,6 +85,8 @@ end
 
 if db_nodes.empty?
 
+  db_nodes = [node]
+
   template "/etc/mongodb.conf" do
     source "mongodb.conf.erb"
     variables(
@@ -106,7 +108,7 @@ if db_nodes.empty?
   end
 
   execute "wait" do
-    command "sleep 20;"
+    command "sleep 90;"
     action :run
   end
 
@@ -129,7 +131,7 @@ if db_nodes.empty?
   end
 
   execute "wait" do
-    command "sleep 20;"
+    command "sleep 90;"
     action :run
   end
 
@@ -179,7 +181,7 @@ elsif not db_ip.include? node[:ipaddress]
   end
 
   execute "wait" do
-    command "sleep 20;"
+    command "sleep 60;"
     action :run
   end
 
