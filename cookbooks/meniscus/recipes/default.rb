@@ -50,6 +50,12 @@ package "meniscus" do
   options "--force-yes"
 end
 
+#upgrade meniscus from repo
+package "meniscus" do
+  action :upgrade
+  options "--force-yes"
+end
+
 service "meniscus" do
   supports :restart => true
   action :enable
