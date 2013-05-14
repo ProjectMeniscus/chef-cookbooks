@@ -108,7 +108,7 @@ if db_nodes.empty?
   end
 
   execute "wait" do
-    command "sleep 90;"
+    command "sleep 120;"
     action :run
   end
 
@@ -131,7 +131,7 @@ if db_nodes.empty?
   end
 
   execute "wait" do
-    command "sleep 90;"
+    command "sleep 120;"
     action :run
   end
 
