@@ -33,7 +33,7 @@ end
 
 #Add Meniscus repository
 apt_repository "ProjectMeniscus" do
-  uri "http://198.61.162.39"
+  uri "http://debrepo.projectmeniscus.org"
   distribution "squeeze"
   components ["main"]
 end
