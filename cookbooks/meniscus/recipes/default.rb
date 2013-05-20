@@ -33,7 +33,7 @@ end
 
 #Add Meniscus repository
 apt_repository "ProjectMeniscus" do
-  uri "http://198.61.162.39"
+  uri "http://debrepo.projectmeniscus.org"
   distribution "squeeze"
   components ["main"]
 end
@@ -105,12 +105,12 @@ end
 #if the worker is a coordinator, search chef server for the 
 #mongo database nodes that are members of the configuration replicaset
 if ["coordinator"].include? node[:meniscus][:personality]
-	db_nodes = search(:node, "mmongo_replset_name:rs_config")
+	db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_config]}")
 
 #if the worker is a storage node, then search chef server for the
 #mongo database nodes that are members of the log storage replicaset
 elsif ["storage"].include? node[:meniscus][:personality]
-	db_nodes = search(:node, "mmongo_replset_name:rs_sink")
+	db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_sink]}")
 
 #else, this worker will not need to talk to a database
 else 
@@ -143,7 +143,7 @@ if not node[:meniscus][:coordinator_ip] or node[:meniscus][:coordinator_ip].empt
   ruby_block "assign coordinator" do
     block do
       #search chef-server for a list of all coordinators
-      coordinator_nodes = search(:node, "meniscus_personality:coordinator")
+      coordinator_nodes = search(:node, "meniscus_personality:coordinator AND meniscus_cluster_name:#{node[:meniscus][:cluster_name]}")
       if coordinator_nodes.count == 0
         node.set[:meniscus][:coordinator_ip] = node[:ipaddress]
 
