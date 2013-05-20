@@ -24,7 +24,7 @@ include_recipe "python::pip"
 
 #pip install all of the dependencies for meniscus
 %w(falcon wsgiref pymongo requests 
-  iso8601 eventlet oslo.config uWSGI
+  iso8601 eventlet oslo.config uWSGI pyes
   https://github.com/ProjectMeniscus/portal/blob/release/Meniscus%20Portal-0.1.tar.gz?raw=true).each do |pkg|
   python_pip pkg do
     action :install
