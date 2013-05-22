@@ -72,7 +72,7 @@ ruby_block "edit iptables.rules" do
     ip_rules.insert_line_after_match('^## TCP$', meniscus_port_rule)
     ip_rules.write_file
 
-    if ["syslog"].include? node[:meniscus][:personality]
+    if ["syslog", "worker"].include? node[:meniscus][:personality]
       ip_rules.insert_line_after_match('^## TCP$', syslog_port_rule)
       ip_rules.write_file
     end
@@ -109,7 +109,7 @@ if ["coordinator"].include? node[:meniscus][:personality]
 
 #if the worker is a storage node, then search chef server for the
 #mongo database nodes that are members of the log storage replicaset
-elsif ["storage"].include? node[:meniscus][:personality]
+elsif ["storage", "worker"].include? node[:meniscus][:personality]
 	db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_sink]}")
 
 #else, this worker will not need to talk to a database
