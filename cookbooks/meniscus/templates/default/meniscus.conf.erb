@@ -1,7 +1,7 @@
 # Default Meniscus Config File
 
 [datasource]
-handler_name = mongodb
+handler_name = <%= @datasource %>
 
 [mongodb]
 mongo_servers = <%= @mongo_servers %>
@@ -9,10 +9,19 @@ database = test
 username = test
 password = test
 
+[elasticsearch]
+es_servers = <%= @es_servers %>
+index = <%= @es_index %>
+
+[celery]
+BROKER_URL = <%= @celery_broker_url %>
+CELERYD_CONCURRENCY = <%= @celery_concurrency %>
+CELERY_DISABLE_RATE_LIMITS = <%= @celery_disbale_rate_limits %>
+CELERY_TASK_SERIALIZER = <%= @celery_task_serializer %>
+
 [cache]
 default_expires = 900
 config_expires = 0
 cache_config = 'cache-config'
 cache_tenant = 'cache-tenant'
 cache_token = 'cache-token'
-cache_broadcast = 'cache-broadcast'

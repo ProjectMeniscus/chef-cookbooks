@@ -24,11 +24,18 @@ include_recipe "python::pip"
 
 #pip install all of the dependencies for meniscus
 %w(falcon wsgiref pymongo requests 
-  iso8601 eventlet oslo.config uWSGI pyes
+  iso8601 eventlet oslo.config uWSGI pyes celery>=3.0.19 librabbitmq>=1.0.1
   https://github.com/ProjectMeniscus/portal/blob/release/Meniscus%20Portal-0.1.tar.gz?raw=true).each do |pkg|
   python_pip pkg do
     action :install
   end
+end
+
+apt_repository "rabbitmq" do
+  uri "http://www.rabbitmq.com/debian/"
+  distribution "testing"
+  components ["main"]
+  key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
 end
 
 #Add Meniscus repository
@@ -42,6 +49,11 @@ end
 execute "apt-get update" do
   command "apt-get update"
   action :run
+end
+
+#install meniscus from repo
+package "rabbitmq-server" do
+  action :install
 end
 
 #install meniscus from repo
@@ -66,19 +78,13 @@ ruby_block "edit iptables.rules" do
   block do
     meniscus_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:port]} -j ACCEPT"
     syslog_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:syslog_port]} -j ACCEPT"
-    json_stream_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:json_stream_port]} -j ACCEPT"
 
     ip_rules = Chef::Util::FileEdit.new('/etc/iptables.rules')
     ip_rules.insert_line_after_match('^## TCP$', meniscus_port_rule)
     ip_rules.write_file
 
-    if ["syslog", "worker"].include? node[:meniscus][:personality]
+    if ["worker"].include? node[:meniscus][:personality]
       ip_rules.insert_line_after_match('^## TCP$', syslog_port_rule)
-      ip_rules.write_file
-    end
-
-    if ["normalization", "storage"].include? node[:meniscus][:personality]
-      ip_rules.insert_line_after_match('^## TCP$', json_stream_port_rule)
       ip_rules.write_file
     end
 
@@ -105,23 +111,24 @@ end
 #if the worker is a coordinator, search chef server for the 
 #mongo database nodes that are members of the configuration replicaset
 if ["coordinator"].include? node[:meniscus][:personality]
-	db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_config]}")
+  node.set[:meniscus][:datasource] = "mongodb"
+	
 
 #if the worker is a storage node, then search chef server for the
 #mongo database nodes that are members of the log storage replicaset
-elsif ["storage", "worker"].include? node[:meniscus][:personality]
-	db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_sink]}")
+elsif ["worker"].include? node[:meniscus][:personality]
+  node.set[:meniscus][:datasource] = "elasticsearch"
 
-#else, this worker will not need to talk to a database
-else 
-	db_nodes = []
 end
 
+#search chef server for the mongo database nodes 
+#that are members of the configuration replicaset
+mongo_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_config]}")
 #create a new array containg only the ip_address:mongo_port_no for each of 
 #the selected databse nodes
-db_ip = []
-db_nodes.each do |db_node|
-	db_ip.push([db_node[:ipaddress], db_node[:mmongo][:port]].join(':'))
+mongo_ip = []
+mongo_nodes.each do |mongo_node|
+	mongo_ip.push([mongo_node[:ipaddress], mongo_node[:mmongo][:port]].join(':'))
 end
 
 #create the meniscus configuration file
@@ -129,16 +136,19 @@ end
 template "/etc/meniscus/meniscus.conf" do
     source "meniscus.conf.erb"
     variables(
-      :mongo_servers => db_ip.join(',')
+      :datasource => node[:meniscus][:datasource],
+      :mongo_servers => mongo_ip.join(','),
+      :es_servers => [node[:meniscus][:es_servers], node[:meniscus][:es_port]].join(':'),
+      :es_index => node[:meniscus][:es_index],
+      :celery_broker_url => node[:meniscus][:celery_broker_url],
+      :celery_concurrency => node[:meniscus][:celery_concurrency],
+      :celery_disbale_rate_limits => node[:meniscus][:celery_disbale_rate_limits],
+      :celery_task_serializer => node[:meniscus][:celery_task_serializer]
     )
     notifies :restart, "service[meniscus]", :immediately
 end
 
-#restart meniscus to load settings from the new conf file
-#service "meniscus" do
-#	action :restart
-#end
-
+#assign the node to a coordinator
 if not node[:meniscus][:coordinator_ip] or node[:meniscus][:coordinator_ip].empty?
   ruby_block "assign coordinator" do
     block do
@@ -164,7 +174,6 @@ if not node[:meniscus][:coordinator_ip] or node[:meniscus][:coordinator_ip].empt
             coordinator_info.push({:coordinator_ip => coordinator_ip, :node_count => member_nodes.count}) 
           end
         end
-
 
         #sort the coordinator array by the number of nodes assigned, 
         #and then select the first coordinator in the array
