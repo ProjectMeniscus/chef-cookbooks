@@ -21,6 +21,17 @@ include_recipe 'apt'
 include_recipe "python::#{node['python']['install_method']}"
 include_recipe "python::pip"
 
+#update app definitions
+execute "apt-get update" do
+  command "apt-get update"
+  action :run
+end
+
+#install meniscus from repo
+package "make" do
+  action :install
+end
+
 
 #pip install all of the dependencies for meniscus
 %w(falcon wsgiref pymongo requests 
@@ -43,12 +54,6 @@ apt_repository "ProjectMeniscus" do
   uri "http://debrepo.projectmeniscus.org"
   distribution "squeeze"
   components ["main"]
-end
-
-#update app definitions
-execute "apt-get update" do
-  command "apt-get update"
-  action :run
 end
 
 #install meniscus from repo
