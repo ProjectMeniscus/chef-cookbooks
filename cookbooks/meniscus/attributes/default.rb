@@ -1,6 +1,6 @@
 default[:meniscus][:personality] = "cbootstrap"
-default[:meniscus][:replset_config] = ""
-default[:meniscus][:replset_sink] = ""
+default[:meniscus][:replset_config] = "empty"
+default[:meniscus][:replset_sink] = "empty"
 default[:meniscus][:cluster_name] = "meniscus"
 default[:meniscus][:port] = "8080"
 default[:meniscus][:syslog_port] = "5140"
