@@ -35,8 +35,8 @@ end
 
 #pip install all of the dependencies for meniscus
 %w(falcon wsgiref pymongo requests 
-  iso8601 eventlet oslo.config uWSGI pyes celery>=3.0.19 librabbitmq>=1.0.1
-  https://github.com/ProjectMeniscus/portal/blob/release/Meniscus%20Portal-0.1.tar.gz?raw=true).each do |pkg|
+  iso8601 eventlet oslo.config uWSGI>=1.9.11 pyes jsonschema>=2.0.0 celery>=3.0.19 librabbitmq>=1.0.1
+  https://github.com/ProjectMeniscus/portal/blob/release/Meniscus%20Portal-0.1.5.tar.gz?raw=true).each do |pkg|
   python_pip pkg do
     action :install
   end
@@ -70,7 +70,7 @@ end
 #upgrade meniscus from repo
 package "meniscus" do
   action :upgrade
-  options "--force-yes"
+  options "--force-yes --force-confold"
 end
 
 service "meniscus" do

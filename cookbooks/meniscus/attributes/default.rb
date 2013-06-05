@@ -8,7 +8,7 @@ default[:meniscus][:es_servers] = "elasticsearch-dev.projectmeniscus.org"
 default[:meniscus][:es_port] = "9200"
 default[:meniscus][:es_index] = "logs-dev"
 default[:meniscus][:celery_broker_url] = "librabbitmq://guest@localhost//"
-default[:meniscus][:celery_concurrency] = "10"
+default[:meniscus][:celery_concurrency] = "32"
 default[:meniscus][:celery_disbale_rate_limits] = "True"
 default[:meniscus][:celery_task_serializer] = "json"
 
