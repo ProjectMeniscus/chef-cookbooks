@@ -27,16 +27,39 @@ execute "apt-get update" do
   action :run
 end
 
-#install meniscus from repo
+#install make for librabbitmq
 package "make" do
+  action :install
+end
+
+package "libestr-dev" do
+  action :install
+end
+
+package "libee-dev" do
+  action :install
+end
+
+package "liblognorm-dev" do
   action :install
 end
 
 
 #pip install all of the dependencies for meniscus
-%w(falcon wsgiref pymongo requests 
-  iso8601 eventlet oslo.config uWSGI>=1.9.11 pyes jsonschema>=2.0.0 celery>=3.0.19 librabbitmq>=1.0.1
-  https://github.com/ProjectMeniscus/portal/blob/release/Meniscus%20Portal-0.1.5.tar.gz?raw=true).each do |pkg|
+%w(falcon
+   wsgiref
+   pymongo
+   requests
+   iso8601
+   eventlet
+   oslo.config
+   uWSGI
+   pyes
+   jsonschema
+   celery
+   librabbitmq
+   pylognorm
+   meniscus-portal).each do |pkg|
   python_pip pkg do
     action :install
   end
@@ -148,7 +171,10 @@ template "/etc/meniscus/meniscus.conf" do
       :celery_broker_url => node[:meniscus][:celery_broker_url],
       :celery_concurrency => node[:meniscus][:celery_concurrency],
       :celery_disbale_rate_limits => node[:meniscus][:celery_disbale_rate_limits],
-      :celery_task_serializer => node[:meniscus][:celery_task_serializer]
+      :celery_task_serializer => node[:meniscus][:celery_task_serializer],
+      :valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
+      :default_sinks => node[:meniscus][:data_sinks_default_sinks],
+      :schema_dir => node[:meniscus][:json_schema_dir]
     )
     notifies :restart, "service[meniscus]", :immediately
 end
@@ -198,18 +224,27 @@ chef_gem "json" do
   action :install
 end
 
+#install ruby uuid support 
+chef_gem "uuid" do
+  action :install
+end
+
 #give the new worker its configuration by making an http POST
 ruby_block "post configuration" do
   block do
     require 'rubygems'
     require 'net/http'
     require 'json'
+    require 'uuid'
     
-    #build the bosy of the post as a json string
+    uuid = UUID.new
+    #build the body of the post as a json string
     body = {
-      "api_secret" => "87188ab51cdhg6efeeee",
-      "coordinator_uri"  =>  "http://#{node[:meniscus][:coordinator_ip]}:#{node[:meniscus][:port]}/v1",
-      "personality"  =>  node[:meniscus][:personality]
+      "pairing_configuration" => {
+        "api_secret" => uuid.generate,
+        "coordinator_uri"  =>  "http://#{node[:meniscus][:coordinator_ip]}:#{node[:meniscus][:port]}/v1",
+        "personality"  =>  node[:meniscus][:personality]
+      }
     }.to_json
 
     print body

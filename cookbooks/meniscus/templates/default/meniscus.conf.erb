@@ -13,6 +13,10 @@ log_file = /var/log/meniscus/meniscus.log
 [datasource]
 handler_name = <%= @datasource %>
 
+[data_sinks]
+valid_sinks = <%= @valid_sinks %>
+default_sinks = <%= @default_sinks %>
+
 [mongodb]
 mongo_servers = <%= @mongo_servers %>
 database = test
@@ -35,3 +39,6 @@ config_expires = 0
 cache_config = 'cache-config'
 cache_tenant = 'cache-tenant'
 cache_token = 'cache-token'
+
+[json_schema]
+schema_dir = <%= @schema_dir %>

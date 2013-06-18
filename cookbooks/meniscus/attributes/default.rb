@@ -11,4 +11,6 @@ default[:meniscus][:celery_broker_url] = "librabbitmq://guest@localhost//"
 default[:meniscus][:celery_concurrency] = "32"
 default[:meniscus][:celery_disbale_rate_limits] = "True"
 default[:meniscus][:celery_task_serializer] = "json"
-
+default[:meniscus][:data_sinks_valid_sinks] = "elasticsearch,hdfs"
+default[:meniscus][:data_sinks_default_sinks] = "elasticsearch"
+default[:meniscus][:json_schema_dir] = "/etc/meniscus/schemas/"
