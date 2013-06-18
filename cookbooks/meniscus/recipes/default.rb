@@ -224,17 +224,24 @@ chef_gem "json" do
   action :install
 end
 
+#install ruby uuid support 
+chef_gem "uuid" do
+  action :install
+end
+
 #give the new worker its configuration by making an http POST
 ruby_block "post configuration" do
   block do
     require 'rubygems'
     require 'net/http'
     require 'json'
+    require 'uuid'
     
-    #build the bosy of the post as a json string
+    uuid = UUID.new
+    #build the body of the post as a json string
     body = {
       "pairing_configuration" => {
-        "api_secret" => "87188ab51cdhg6efeeee",
+        "api_secret" => uuid.generate,
         "coordinator_uri"  =>  "http://#{node[:meniscus][:coordinator_ip]}:#{node[:meniscus][:port]}/v1",
         "personality"  =>  node[:meniscus][:personality]
       }
