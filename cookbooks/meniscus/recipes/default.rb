@@ -27,7 +27,7 @@ execute "apt-get update" do
   action :run
 end
 
-#install make fro librabbitmq
+#install make for librabbitmq
 package "make" do
   action :install
 end
