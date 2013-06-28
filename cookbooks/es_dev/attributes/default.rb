@@ -1,0 +1,1 @@
+# default[:elasticsearch][:config] = "/etc/elasticsearch"
