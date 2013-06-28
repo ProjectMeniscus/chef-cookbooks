@@ -18,8 +18,8 @@
 #
 
 include_recipe 'apt'
-include_recipe "python::#{node['python']['install_method']}"
-include_recipe "python::pip"
+#include_recipe "python::#{node['python']['install_method']}"
+#include_recipe "python::pip"
 
 #update app definitions
 execute "apt-get update" do
@@ -44,32 +44,13 @@ package "liblognorm-dev" do
   action :install
 end
 
-
-#pip install all of the dependencies for meniscus
-%w(falcon
-   wsgiref
-   pymongo
-   requests
-   iso8601
-   eventlet
-   oslo.config
-   uWSGI
-   pyes
-   jsonschema
-   celery
-   librabbitmq
-   pylognorm
-   meniscus-portal).each do |pkg|
-  python_pip pkg do
-    action :install
+if ["worker"].include? node[:meniscus][:personality]
+  apt_repository "rabbitmq" do
+    uri "http://www.rabbitmq.com/debian/"
+    distribution "testing"
+    components ["main"]
+    key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
   end
-end
-
-apt_repository "rabbitmq" do
-  uri "http://www.rabbitmq.com/debian/"
-  distribution "testing"
-  components ["main"]
-  key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
 end
 
 #Add Meniscus repository
@@ -93,7 +74,7 @@ end
 #upgrade meniscus from repo
 package "meniscus" do
   action :upgrade
-  options "--force-yes --force-confold"
+  options "--force-yes"
 end
 
 service "meniscus" do
@@ -149,33 +130,37 @@ elsif ["worker"].include? node[:meniscus][:personality]
 
 end
 
-#search chef server for the mongo database nodes 
-#that are members of the configuration replicaset
-mongo_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:replset_config]}")
-#create a new array containg only the ip_address:mongo_port_no for each of 
-#the selected databse nodes
-mongo_ip = []
-mongo_nodes.each do |mongo_node|
-	mongo_ip.push([mongo_node[:ipaddress], mongo_node[:mmongo][:port]].join(':'))
-end
-
 #create the meniscus configuration file
 #use the db_ip array to create the list of mongo servers needed in the conf file
 template "/etc/meniscus/meniscus.conf" do
     source "meniscus.conf.erb"
     variables(
-      :datasource => node[:meniscus][:datasource],
-      :mongo_servers => mongo_ip.join(','),
-      :es_servers => [node[:meniscus][:es_servers], node[:meniscus][:es_port]].join(':'),
-      :es_index => node[:meniscus][:es_index],
+      :data_sinks_valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
+      :data_sinks_default_sink => node[:meniscus][:data_sinks_default_sink],
+      :coordinator_db_adapter_name => node[:meniscus][:coordinator_db_adapter_name],
+      :coordinator_db_servers => node[:meniscus][:coordinator_db_servers],
+      :coordinator_db_database => node[:meniscus][:coordinator_db_database],
+      :coordinator_db_username => node[:meniscus][:coordinator_db_username],
+      :coordinator_db_password => node[:meniscus][:coordinator_db_password],
+      :default_sink_adapter_name => node[:meniscus][:default_sink_adapter_name], 
+      :default_sink_servers => node[:meniscus][:default_sink_servers],
+      :default_sink_index => node[:meniscus][:default_sink_index],
+      :short_term_sink_adapter_name => node[:meniscus][:short_term_sink_adapter_name],
+      :short_term_sink_servers => node[:meniscus][:short_term_sink_servers],
+      :short_term_sink_database => node[:meniscus][:short_term_sink_database],
+      :short_term_sink_username => node[:meniscus][:short_term_sink_username],
+      :short_term_sink_password => node[:meniscus][:short_term_sink_password],
       :celery_broker_url => node[:meniscus][:celery_broker_url],
       :celery_concurrency => node[:meniscus][:celery_concurrency],
       :celery_disbale_rate_limits => node[:meniscus][:celery_disbale_rate_limits],
       :celery_task_serializer => node[:meniscus][:celery_task_serializer],
-      :valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
-      :default_sinks => node[:meniscus][:data_sinks_default_sinks],
       :schema_dir => node[:meniscus][:json_schema_dir]
     )
+    notifies :restart, "service[meniscus]", :immediately
+end
+
+template "/etc/meniscus/meniscus-paste.ini" do
+    source "meniscus-paste.ini.erb"
     notifies :restart, "service[meniscus]", :immediately
 end
 

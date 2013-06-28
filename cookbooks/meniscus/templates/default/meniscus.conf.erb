@@ -10,22 +10,29 @@ debug = True
 # Log to this file
 log_file = /var/log/meniscus/meniscus.log
 
-[datasource]
-handler_name = <%= @datasource %>
-
 [data_sinks]
-valid_sinks = <%= @valid_sinks %>
-default_sinks = <%= @default_sinks %>
+valid_sinks = <%= @data_sinks_valid_sinks %>
+default_sink = <%= @data_sinks_default_sink %>
 
-[mongodb]
-mongo_servers = <%= @mongo_servers %>
-database = test
-username = test
-password = test
 
-[elasticsearch]
-es_servers = <%= @es_servers %>
-index = <%= @es_index %>
+[coordinator_db]
+adapter_name = <%= @coordinator_db_adapter_name %>
+servers = <%= @coordinator_db_servers %>
+database = <%= @coordinator_db_database %>
+username = <%= @coordinator_db_username %>
+password = <%= @coordinator_db_password %>
+
+[default_sink]
+adapter_name = <%= @default_sink_adapter_name %>
+servers = <%= @default_sink_servers %>
+index = <%= @default_sink_index %>
+
+[short_term_sink]
+adapter_name = <%= @short_term_sink_adapter_name %>
+servers = <%= @short_term_sink_servers %>
+database = <%= @short_term_sink_database %>
+username = <%= @short_term_sink_username %>
+password = <%= @short_term_sink_password %>
 
 [celery]
 BROKER_URL = <%= @celery_broker_url %>
