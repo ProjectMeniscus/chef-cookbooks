@@ -17,7 +17,7 @@ password = <%= @coordinator_db_password %>
 
 #datastore for short term storage of log messages before dispatching to sinks
 [short_term_store]
-adapter_name = <%= @short_term_sink_adapter_name %>
+adapter_name = <%= @short_term_store_adapter_name %>
 servers = <%= @short_term_store_servers %>
 database = <%= @short_term_store_database %>
 username = <%= @short_term_store_username %>

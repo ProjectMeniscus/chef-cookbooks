@@ -125,7 +125,7 @@ coordinator_db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:coo
 coordinator_db_ip = []
 coordinator_db_nodes.each do |coordinator_db_node|
   coordinator_db_ip.push([coordinator_db_node[:ipaddress], coordinator_db_node[:mmongo][:port]].join(':'))
-  node[:meniscus][:coordinator_db_servers] = coordinator_db_ip.join(',')
+  node.set[:meniscus][:coordinator_db_servers] = coordinator_db_ip.join(',')
 end
 
 #search chef server for the short_term_store database nodes
@@ -134,7 +134,7 @@ short_term_store_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:s
 short_term_store_ip = []
 short_term_store_nodes.each do |short_term_store_node|
   short_term_store_ip.push([short_term_store_node[:ipaddress], short_term_store_node[:mmongo][:port]].join(':'))
-  node[:meniscus][:short_term_store_servers] = short_term_store_ip.join(',')
+  node.set[:meniscus][:short_term_store_servers] = short_term_store_ip.join(',')
 end
 
 
@@ -150,7 +150,7 @@ template "/etc/meniscus/meniscus.conf" do
       :coordinator_db_database => node[:meniscus][:coordinator_db_database],
       :coordinator_db_username => node[:meniscus][:coordinator_db_username],
       :coordinator_db_password => node[:meniscus][:coordinator_db_password],
-      :short_term_store_adapter_name => node[:meniscus][:short_term_sink_adapter_name],
+      :short_term_store_adapter_name => node[:meniscus][:short_term_store_adapter_name],
       :short_term_store_servers => node[:meniscus][:short_term_store_servers],
       :short_term_store_database => node[:meniscus][:short_term_store_database],
       :short_term_store_username => node[:meniscus][:short_term_store_username],
