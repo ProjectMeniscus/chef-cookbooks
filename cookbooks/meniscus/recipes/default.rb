@@ -21,6 +21,26 @@ include_recipe 'apt'
 #include_recipe "python::#{node['python']['install_method']}"
 #include_recipe "python::pip"
 
+
+apt_repository "rabbitmq" do
+  uri "http://www.rabbitmq.com/debian/"
+  distribution "testing"
+  components ["main"]
+  key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
+end
+
+ package "rabbitmq-server" do
+  action :install
+end
+
+
+#Add Meniscus repository
+apt_repository "ProjectMeniscus" do
+  uri "http://debrepo.projectmeniscus.org"
+  distribution "squeeze"
+  components ["main"]
+end
+
 #update app definitions
 execute "apt-get update" do
   command "apt-get update"
@@ -32,6 +52,7 @@ package "make" do
   action :install
 end
 
+#install C dependencies for pylognorm
 package "libestr-dev" do
   action :install
 end
@@ -44,26 +65,6 @@ package "liblognorm-dev" do
   action :install
 end
 
-if ["worker"].include? node[:meniscus][:personality]
-  apt_repository "rabbitmq" do
-    uri "http://www.rabbitmq.com/debian/"
-    distribution "testing"
-    components ["main"]
-    key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
-  end
-end
-
-#Add Meniscus repository
-apt_repository "ProjectMeniscus" do
-  uri "http://debrepo.projectmeniscus.org"
-  distribution "squeeze"
-  components ["main"]
-end
-
-#install meniscus from repo
-package "rabbitmq-server" do
-  action :install
-end
 
 #install meniscus from repo
 package "meniscus" do
@@ -77,6 +78,7 @@ package "meniscus" do
   options "--force-yes"
 end
 
+#Define meniscus service
 service "meniscus" do
   supports :restart => true
   action :enable
@@ -117,39 +119,53 @@ if node[:meniscus][:personality] == "cbootstrap"
   node.set[:meniscus][:personality] = "coordinator"
 end
 
-#if the worker is a coordinator, search chef server for the 
-#mongo database nodes that are members of the configuration replicaset
-if ["coordinator"].include? node[:meniscus][:personality]
-  node.set[:meniscus][:datasource] = "mongodb"
-	
-
-#if the worker is a storage node, then search chef server for the
-#mongo database nodes that are members of the log storage replicaset
-elsif ["worker"].include? node[:meniscus][:personality]
-  node.set[:meniscus][:datasource] = "elasticsearch"
-
+#search chef server for the coordinator_db database nodes
+coordinator_db_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:coordinator_db_cluster_name]}")
+#create a new array containg only the ip_address:port_no for each of the database nodes
+coordinator_db_ip = []
+coordinator_db_nodes.each do |coordinator_db_node|
+  coordinator_db_ip.push([coordinator_db_node[:ipaddress], coordinator_db_node[:mmongo][:port]].join(':'))
+  node[:meniscus][:coordinator_db_servers] = coordinator_db_ip.join(',')
 end
+
+#search chef server for the short_term_store database nodes
+short_term_store_nodes = search(:node, "mmongo_replset_name:#{node[:meniscus][:short_term_store_cluster_name]}")
+#create a new array containg only the ip_address:port_no for each of the database nodes
+short_term_store_ip = []
+short_term_store_nodes.each do |short_term_store_node|
+  short_term_store_ip.push([short_term_store_node[:ipaddress], short_term_store_node[:mmongo][:port]].join(':'))
+  node[:meniscus][:short_term_store_servers] = short_term_store_ip.join(',')
+end
+
 
 #create the meniscus configuration file
 #use the db_ip array to create the list of mongo servers needed in the conf file
 template "/etc/meniscus/meniscus.conf" do
     source "meniscus.conf.erb"
     variables(
-      :data_sinks_valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
-      :data_sinks_default_sink => node[:meniscus][:data_sinks_default_sink],
+      :log_debug => node[:meniscus][:log_debug],
+      :log_file => node[:meniscus][:log_file],
       :coordinator_db_adapter_name => node[:meniscus][:coordinator_db_adapter_name],
       :coordinator_db_servers => node[:meniscus][:coordinator_db_servers],
       :coordinator_db_database => node[:meniscus][:coordinator_db_database],
       :coordinator_db_username => node[:meniscus][:coordinator_db_username],
       :coordinator_db_password => node[:meniscus][:coordinator_db_password],
+      :short_term_store_adapter_name => node[:meniscus][:short_term_sink_adapter_name],
+      :short_term_store_servers => node[:meniscus][:short_term_store_servers],
+      :short_term_store_database => node[:meniscus][:short_term_store_database],
+      :short_term_store_username => node[:meniscus][:short_term_store_username],
+      :short_term_store_password => node[:meniscus][:short_term_store_password],
+      :data_sinks_valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
+      :data_sinks_default_sink => node[:meniscus][:data_sinks_default_sink],
       :default_sink_adapter_name => node[:meniscus][:default_sink_adapter_name], 
       :default_sink_servers => node[:meniscus][:default_sink_servers],
       :default_sink_index => node[:meniscus][:default_sink_index],
-      :short_term_sink_adapter_name => node[:meniscus][:short_term_sink_adapter_name],
-      :short_term_sink_servers => node[:meniscus][:short_term_sink_servers],
-      :short_term_sink_database => node[:meniscus][:short_term_sink_database],
-      :short_term_sink_username => node[:meniscus][:short_term_sink_username],
-      :short_term_sink_password => node[:meniscus][:short_term_sink_password],
+      :hdfs_sink_hostname => node[:meniscus][:hdfs_sink_hostname],
+      :hdfs_sink_port => node[:meniscus][:hdfs_sink_port],
+      :hdfs_sink_user_name => node[:meniscus][:hdfs_sink_user_name],
+      :hdfs_sink_base_directory => node[:meniscus][:hdfs_sink_base_directory],
+      :hdfs_sink_transaction_expire => node[:meniscus][:hdfs_sink_transaction_expire],
+      :hdfs_sink_transfer_frequency => node[:meniscus][:hdfs_sink_transfer_frequency],
       :celery_broker_url => node[:meniscus][:celery_broker_url],
       :celery_concurrency => node[:meniscus][:celery_concurrency],
       :celery_disbale_rate_limits => node[:meniscus][:celery_disbale_rate_limits],
@@ -159,10 +175,12 @@ template "/etc/meniscus/meniscus.conf" do
     notifies :restart, "service[meniscus]", :immediately
 end
 
+
 template "/etc/meniscus/meniscus-paste.ini" do
     source "meniscus-paste.ini.erb"
     notifies :restart, "service[meniscus]", :immediately
 end
+
 
 #assign the node to a coordinator
 if not node[:meniscus][:coordinator_ip] or node[:meniscus][:coordinator_ip].empty?
