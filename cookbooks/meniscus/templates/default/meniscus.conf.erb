@@ -1,38 +1,59 @@
 # Default Meniscus Config File
 
 [DEFAULT]
-# Show more verbose log output (sets INFO log level output)
-#verbose = True
-
 # Show debugging output in logs (sets DEBUG log level output)
-debug = True
+debug = <%= @log_debug %>
 
 # Log to this file
-log_file = /var/log/meniscus/meniscus.log
+log_file = <%= @log_file %>
 
-[datasource]
-handler_name = <%= @datasource %>
+#datastore used by coordinator to store worker and tenant configurations
+[coordinator_db]
+adapter_name = <%= @coordinator_db_adapter_name %>
+servers = <%= @coordinator_db_servers %>
+database = <%= @coordinator_db_database %>
+username = <%= @coordinator_db_username %>
+password = <%= @coordinator_db_password %>
 
+#datastore for short term storage of log messages before dispatching to sinks
+[short_term_store]
+adapter_name = <%= @short_term_store_adapter_name %>
+servers = <%= @short_term_store_servers %>
+database = <%= @short_term_store_database %>
+username = <%= @short_term_store_username %>
+password = <%= @short_term_store_password %>
+
+
+#List of valid sinks for log messages
 [data_sinks]
-valid_sinks = <%= @valid_sinks %>
-default_sinks = <%= @default_sinks %>
+valid_sinks = <%= @data_sinks_valid_sinks %>
+default_sink = <%= @data_sinks_default_sink %>
 
-[mongodb]
-mongo_servers = <%= @mongo_servers %>
-database = test
-username = test
-password = test
+#connection parameters for default sink
+[default_sink]
+adapter_name = <%= @default_sink_adapter_name %>
+servers = <%= @default_sink_servers %>
+index = <%= @default_sink_index %>
 
-[elasticsearch]
-es_servers = <%= @es_servers %>
-index = <%= @es_index %>
 
+#connection arguments for HDFS sink (connecting through WebHDFS Rest API)
+[hdfs_sink]
+host = <%= @hdfs_sink_hostname %>
+port = <%= @hdfs_sink_port %>
+user_name = <%= @hdfs_sink_user_name %>
+base_directory = <%= @hdfs_sink_base_directory %>
+transaction_expire = <%= @hdfs_sink_transaction_expire %>
+transfer_frequency = <%= @hdfs_sink_transfer_frequency %>
+
+
+#celery configuration for Worker nodes to queue tasks locally
 [celery]
 BROKER_URL = <%= @celery_broker_url %>
 CELERYD_CONCURRENCY = <%= @celery_concurrency %>
 CELERY_DISABLE_RATE_LIMITS = <%= @celery_disbale_rate_limits %>
 CELERY_TASK_SERIALIZER = <%= @celery_task_serializer %>
 
+#UWSGI local cache settings
 [cache]
 default_expires = 900
 config_expires = 0
@@ -40,5 +61,6 @@ cache_config = 'cache-config'
 cache_tenant = 'cache-tenant'
 cache_token = 'cache-token'
 
+#directory for loading JSON Schema definitions used for API request validation
 [json_schema]
 schema_dir = <%= @schema_dir %>

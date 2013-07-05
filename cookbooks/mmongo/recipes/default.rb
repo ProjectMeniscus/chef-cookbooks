@@ -54,6 +54,7 @@ end
 
 chef_gem "mongo" do
   action :install
+  version '1.8.6'
 end
 
 keyfile = data_bag_item("mongo_users", "key")
@@ -145,7 +146,7 @@ if db_nodes.empty?
       
       admin_credentials = data_bag_item("mongo_users", "admin")
       db = client.db('admin')
-      db.add_user(admin_credentials["user"], admin_credentials["pass"])
+      db.add_user(admin_credentials["user"], admin_credentials["pass"], nil)
 
       db = client.db('test')
       test_credentials = data_bag_item("mongo_users", "test")
