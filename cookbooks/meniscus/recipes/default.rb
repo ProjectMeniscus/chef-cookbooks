@@ -18,8 +18,6 @@
 #
 
 include_recipe 'apt'
-#include_recipe "python::#{node['python']['install_method']}"
-#include_recipe "python::pip"
 
 
 apt_repository "rabbitmq" do
@@ -84,7 +82,7 @@ service "meniscus" do
   action :enable
 end
 
-#configure firewall rules to open a port for meniscus
+#configure firewall rules to open ports for meniscus
 ruby_block "edit iptables.rules" do
   block do
     meniscus_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:port]} -j ACCEPT"
