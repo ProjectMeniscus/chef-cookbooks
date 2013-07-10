@@ -1,0 +1,5 @@
+cluster.name: <%= @cluster_name %>
+node.name: "<%= @node_name %>"
+node.data: true
+discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.unicast.hosts: ["<%= @host_name %>"]
