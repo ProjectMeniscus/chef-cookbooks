@@ -1,0 +1,1 @@
+default[:dev_template][:authorized_keys] = ""
