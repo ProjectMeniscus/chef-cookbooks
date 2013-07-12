@@ -74,10 +74,16 @@ if Chef::Config[:solo]
   Chef::Log.warn("This recipe requires Chef Server to join replsets. This node will start as new replset")
   db_nodes = []
   db_ip = []
+  dp_master_ip = []
 else
   db_nodes = search(:node, "mmongo_replset_name:#{node[:mmongo][:replset_name]}")
   db_ip = []
+  #iterate through nodes for node ips and names for host file
+  #find master node ip for elasticsearch.yml file
   db_nodes.each do |db_node|
+    if db_node[:ismaster]
+      db_master_ip = db_node[:ipaddress]
+    end
     db_ip.push(db_node[:ipaddress])
   end
 
