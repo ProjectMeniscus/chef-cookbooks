@@ -158,6 +158,7 @@ template "/etc/meniscus/meniscus.conf" do
       :default_sink_adapter_name => node[:meniscus][:default_sink_adapter_name], 
       :default_sink_servers => node[:meniscus][:default_sink_servers],
       :default_sink_index => node[:meniscus][:default_sink_index],
+      :default_sink_bulk_size => node[:meniscus][:default_sink_bulk_size],
       :hdfs_sink_hostname => node[:meniscus][:hdfs_sink_hostname],
       :hdfs_sink_port => node[:meniscus][:hdfs_sink_port],
       :hdfs_sink_user_name => node[:meniscus][:hdfs_sink_user_name],
@@ -168,7 +169,8 @@ template "/etc/meniscus/meniscus.conf" do
       :celery_concurrency => node[:meniscus][:celery_concurrency],
       :celery_disbale_rate_limits => node[:meniscus][:celery_disbale_rate_limits],
       :celery_task_serializer => node[:meniscus][:celery_task_serializer],
-      :schema_dir => node[:meniscus][:json_schema_dir]
+      :schema_dir => node[:meniscus][:json_schema_dir],
+      :liblognorm_rules_dir => node[:meniscus][:liblognorm_rules_dir]
     )
     notifies :restart, "service[meniscus]", :immediately
 end

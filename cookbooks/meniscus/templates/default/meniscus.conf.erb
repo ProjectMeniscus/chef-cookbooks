@@ -34,6 +34,7 @@ default_sink = <%= @data_sinks_default_sink %>
 adapter_name = <%= @default_sink_adapter_name %>
 servers = <%= @default_sink_servers %>
 index = <%= @default_sink_index %>
+bulk_size = <%= @default_sink_bulk_size %>
 
 
 #connection arguments for HDFS sink (connecting through WebHDFS Rest API)
@@ -64,3 +65,9 @@ cache_token = 'cache-token'
 #directory for loading JSON Schema definitions used for API request validation
 [json_schema]
 schema_dir = <%= @schema_dir %>
+
+# Directory for loading normalization rules
+[liblognorm]
+rules_dir = <%= @liblognorm_rules_dir %>
+
+
