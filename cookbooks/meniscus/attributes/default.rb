@@ -27,6 +27,7 @@ default[:meniscus][:elasticsearch_sink_cluster_name] = ""
 default[:meniscus][:default_sink_adapter_name] = "elasticsearch" 
 default[:meniscus][:default_sink_servers] = "elasticsearch-dev.projectmeniscus.org:9200"
 default[:meniscus][:default_sink_index] = "logs-dev"
+default[:meniscus][:default_sink_bulk_size] = "100"
 
 default[:meniscus][:hdfs_sink_hostname] = "hortonworks.projectmeniscus.org" 
 default[:meniscus][:hdfs_sink_port] = "50070"
@@ -41,3 +42,4 @@ default[:meniscus][:celery_disbale_rate_limits] = "True"
 default[:meniscus][:celery_task_serializer] = "json"
 
 default[:meniscus][:json_schema_dir] = "/etc/meniscus/schemas/"
+default[:meniscus][:liblognorm_rules_dir] = "/etc/meniscus/normalizer_rules/"
