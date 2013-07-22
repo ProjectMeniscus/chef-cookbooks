@@ -51,12 +51,12 @@ transfer_frequency = <%= @hdfs_sink_transfer_frequency %>
 [celery]
 BROKER_URL = <%= @celery_broker_url %>
 CELERYD_CONCURRENCY = <%= @celery_concurrency %>
-CELERY_DISABLE_RATE_LIMITS = <%= @celery_disbale_rate_limits %>
+CELERY_DISABLE_RATE_LIMITS = <%= @celery_disable_rate_limits %>
 CELERY_TASK_SERIALIZER = <%= @celery_task_serializer %>
 
 #UWSGI local cache settings
 [cache]
-default_expires = 900
+default_expires = <%= @uwsgi_cache_expires %>
 config_expires = 0
 cache_config = 'cache-config'
 cache_tenant = 'cache-tenant'
@@ -70,4 +70,7 @@ schema_dir = <%= @schema_dir %>
 [liblognorm]
 rules_dir = <%= @liblognorm_rules_dir %>
 
+# Examples: eth0, eth1, eth2, wlan0, wlan1, wifi0, ath0, ath1, ppp0
+[network_interface]
+default_ifname = <%= @default_ifname %>
 
