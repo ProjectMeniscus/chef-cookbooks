@@ -21,6 +21,28 @@ cookbook_file "/etc/network/if-pre-up.d/iptables" do
   mode 00744
 end
 
+#take only the hostname if the fqdn is assigned as the node name
+node_name = node.name
+node_name_split = node_name.partition(".")
+hostname = node_name_split[0]
+
+template "/etc/hostname" do
+    source "hostname.erb"
+    variables(
+      :hostname => hostname
+    )
+
+end
+
+#apply hostname immediately
+bash "hostname_update" do
+  user "root"
+  code <<-EOH
+    hostname -F /etc/hostname
+  EOH
+  action :run
+end
+
 #install ruby json support 
 chef_gem "json" do
   action :install

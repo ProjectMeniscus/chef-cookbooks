@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+#node[:rackspace][:private_ip]
 apt_repository "10gen" do
   uri "http://downloads-distro.mongodb.org/repo/ubuntu-upstart"
   distribution "dist"
@@ -57,8 +58,8 @@ chef_gem "mongo" do
   version '1.8.6'
 end
 
-keyfile = data_bag_item("mongo_users", "key")
-key = keyfile["key"]
+mongo_settings = data_bag_item(node.chef_environment, node[:mmongo][:databag_item])
+key = mongo_settings["key"]
 
 template node[:mmongo][:keyfile] do
     source "keyfile.erb"
@@ -69,22 +70,17 @@ template node[:mmongo][:keyfile] do
     )
 end
 
+node.set[:mmongo][:replset_name] = mongo_settings["replset_name"]
 #searching for existing nodes in replset, only possible with Chef Server, not with Chef Solo
 if Chef::Config[:solo]
   Chef::Log.warn("This recipe requires Chef Server to join replsets. This node will start as new replset")
   db_nodes = []
   db_ip = []
-  dp_master_ip = []
 else
   db_nodes = search(:node, "mmongo_replset_name:#{node[:mmongo][:replset_name]}")
   db_ip = []
-  #iterate through nodes for node ips and names for host file
-  #find master node ip for elasticsearch.yml file
   db_nodes.each do |db_node|
-    if db_node[:ismaster]
-      db_master_ip = db_node[:ipaddress]
-    end
-    db_ip.push(db_node[:ipaddress])
+    db_ip.push(db_node[:rackspace][:private_ip])
   end
 
 end
@@ -131,7 +127,7 @@ if db_nodes.empty?
       cmd = BSON::OrderedHash.new
       cmd['replSetInitiate'] = { '_id' => node[:mmongo][:replset_name], 
                                  'members' => [ { '_id' => 0, 
-                                                  'host' => [node[:ipaddress], 
+                                                  'host' => [node[:rackspace][:private_ip], 
                                                              node[:mmongo][:port]].join(':') } ] }
       db.command(cmd)
     end
@@ -149,14 +145,12 @@ if db_nodes.empty?
 
       Chef::Log.debug("Adding users")
       client = Mongo::MongoClient.new('localhost', node[:mmongo][:port])  
-      
-      admin_credentials = data_bag_item("mongo_users", "admin")
+     
       db = client.db('admin')
-      db.add_user(admin_credentials["user"], admin_credentials["pass"], nil)
+      db.add_user(mongo_settings["admin_user"], mongo_settings["admin_pass"])
 
-      db = client.db('test')
-      test_credentials = data_bag_item("mongo_users", "test")
-      db.add_user(test_credentials["user"], test_credentials["pass"])
+      db = client.db('meniscus')
+      db.add_user(mongo_settings["meniscus_user"], mongo_settings["meniscus_pass"])
 
     end
   end
@@ -173,7 +167,7 @@ if db_nodes.empty?
     action :restart
   end
 
-elsif not db_ip.include? node[:ipaddress]
+elsif not db_ip.include? node[:rackspace][:private_ip]
 
   template "/etc/mongodb.conf" do
     source "mongodb.conf.erb"
@@ -201,12 +195,11 @@ elsif not db_ip.include? node[:ipaddress]
 
       repl_node = db_nodes[0]
       client = Mongo::MongoReplicaSetClient.new([
-                   [ repl_node[:ipaddress], 
+                   [ repl_node[:rackspace][:private_ip], 
                      repl_node[:mmongo][:port] ].join(':')
                ])
 
-      admin_credentials = data_bag_item("mongo_users", "admin")
-      client.add_auth("admin", admin_credentials["user"], admin_credentials["pass"])
+      client.add_auth("admin", mongo_settings["admin_user"], mongo_settings["admin_pass"])
       client.apply_saved_authentication()
 
       if !client.primary?
@@ -217,7 +210,7 @@ elsif not db_ip.include? node[:ipaddress]
       config = client.db('local').collection('system.replset').find_one
       config['version'] += 1
       config['members'] << { '_id' => config['members'].size, 
-                             'host' => [node[:ipaddress], node[:mmongo][:port]].join(':') }
+                             'host' => [node[:rackspace][:private_ip], node[:mmongo][:port]].join(':') }
       cmd = BSON::OrderedHash.new
       cmd['replSetReconfig'] = config
       db = client.db('admin')
