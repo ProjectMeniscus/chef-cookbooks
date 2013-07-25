@@ -141,15 +141,21 @@ short_term_store_nodes.each do |short_term_store_node|
 end
 
 coordinator_db_settings = data_bag_item(node.chef_environment, node[:meniscus][:coordinator_db_databag_item])
-coordinator_db_username = coordinator_db_settings[:meniscus_user]
-coordinator_db_password = coordinator_db_settings[:meniscus_pass]
+coordinator_db_username = coordinator_db_settings["meniscus_user"]
+coordinator_db_password = coordinator_db_settings["meniscus_pass"]
+
+puts "**databage items:**"
+puts coordinator_db_settings["meniscus_user"]
+puts coordinator_db_username 
+puts coordinator_db_settings["meniscus_pass"]
+puts coordinator_db_password
 
 short_term_store_username = nil
 short_term_store_password = nil
 if node[:meniscus][:short_term_store_databag_item]
   short_term_store_settings = data_bag_item(node.chef_environment, node[:meniscus][:short_term_store_databag_item])
-  short_term_store_username = short_term_store_settings[:meniscus_user]
-  short_term_store_password = short_term_store_settings[:meniscus_pass]
+  short_term_store_username = short_term_store_settings["meniscus_user"]
+  short_term_store_password = short_term_store_settings["meniscus_pass"]
 end
 
 #create the meniscus configuration file
@@ -160,18 +166,21 @@ template "/etc/meniscus/meniscus.conf" do
       :log_debug => node[:meniscus][:log_debug],
       :log_file => node[:meniscus][:log_file],
       :coordinator_db_adapter_name => node[:meniscus][:coordinator_db_adapter_name],
+      :coordinator_db_active => node[:meniscus][:coordinator_db_active],
       :coordinator_db_servers => node[:meniscus][:coordinator_db_servers],
       :coordinator_db_database => node[:meniscus][:coordinator_db_database],
       :coordinator_db_username => coordinator_db_username,
       :coordinator_db_password => coordinator_db_password,
       :short_term_store_adapter_name => node[:meniscus][:short_term_store_adapter_name],
+      :short_term_store_active => node[:meniscus][:short_term_store_active],
       :short_term_store_servers => node[:meniscus][:short_term_store_servers],
       :short_term_store_database => node[:meniscus][:short_term_store_database],
       :short_term_store_username => short_term_store_username,
       :short_term_store_password => short_term_store_password,
       :data_sinks_valid_sinks => node[:meniscus][:data_sinks_valid_sinks],
       :data_sinks_default_sink => node[:meniscus][:data_sinks_default_sink],
-      :default_sink_adapter_name => node[:meniscus][:default_sink_adapter_name], 
+      :default_sink_adapter_name => node[:meniscus][:default_sink_adapter_name],
+      :default_sink_active => node[:meniscus][:default_sink_active], 
       :default_sink_servers => node[:meniscus][:default_sink_servers],
       :default_sink_index => node[:meniscus][:default_sink_index],
       :default_sink_bulk_size => node[:meniscus][:default_sink_bulk_size],
@@ -205,6 +214,8 @@ template "/etc/meniscus/uwsgi.ini" do
       :uwsgi_socket => "#{node[:rackspace][:private_ip]}:#{node[:meniscus][:port]}",
       :pynopath => node[:meniscus][:pynopath],
       :config_file => node[:meniscus][:config_file],
+      :uwsgi_protocol => node[:meniscus][:uwsgi_protocol],
+      :uwsgi_processes => node[:meniscus][:uwsgi_processes],
       :uwsgi_paste_file => node[:meniscus][:uwsgi_paste_file],
       :uwsgi_config_cache_items => node[:meniscus][:uwsgi_config_cache_items],
       :uwsgi_tenant_cache_items => node[:meniscus][:uwsgi_tenant_cache_items],
@@ -223,34 +234,37 @@ chef_gem "uuid" do
   action :install
 end
 
-#give the new worker its configuration by making an http POST
-ruby_block "post configuration" do
-  block do
-    require 'rubygems'
-    require 'net/http'
-    require 'json'
-    require 'uuid'
-    
-    uuid = UUID.new
-    #build the body of the post as a json string
-    body = {
-      "pairing_configuration" => {
-        "api_secret" => uuid.generate,
-        "coordinator_uri"  =>  "http://#{coordinator_uri}:#{node[:meniscus][:port]}/v1",
-        "personality"  =>  node[:meniscus][:personality]
-      }
-    }.to_json
+if not node[:meniscus][:paired]
+  #give the new worker its configuration by making an http POST
+  ruby_block "post configuration" do
+    block do
+      require 'rubygems'
+      require 'net/http'
+      require 'json'
+      require 'uuid'
+      
+      uuid = UUID.new
+      #build the body of the post as a json string
+      body = {
+        "pairing_configuration" => {
+          "api_secret" => uuid.generate,
+          "coordinator_uri"  =>  "http://#{coordinator_uri}:#{node[:meniscus][:port]}/v1",
+          "personality"  =>  node[:meniscus][:personality]
+        }
+      }.to_json
 
-    print body
+      print body
 
-    #build the POST request objet
-    req = Net::HTTP::Post.new("/v1/pairing/configure", initheader = {'Content-Type' =>'application/json'})
-    req.body = body
+      #build the POST request objet
+      req = Net::HTTP::Post.new("/v1/pairing/configure", initheader = {'Content-Type' =>'application/json'})
+      req.body = body
 
-    #make the POST request
-    response = Net::HTTP.new(node[:rackspace][:private_ip], node[:meniscus][:port]).start {|http| http.request(req) }
-    puts "Response #{response.code} #{response.message}:
-          #{response.body}"
+      #make the POST request
+      response = Net::HTTP.new(node[:rackspace][:private_ip], node[:meniscus][:port]).start {|http| http.request(req) }
+      puts "Response #{response.code} #{response.message}:
+            #{response.body}"
+      node.set[:meniscus][:paired] = true
 
+    end
   end
 end

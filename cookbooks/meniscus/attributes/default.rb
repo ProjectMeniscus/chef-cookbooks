@@ -1,4 +1,5 @@
 default[:meniscus][:personality] = "cbootstrap"
+default[:meniscus][:paired] = false
 default[:meniscus][:cluster_name] = "meniscus"
 default[:meniscus][:port] = "8080"
 default[:meniscus][:syslog_port] = "5140"
@@ -15,6 +16,7 @@ default[:meniscus][:coordinator_uri] = "localhost"
 default[:meniscus][:coordinator_db_databag_item] = "configdb"
 default[:meniscus][:coordinator_db_cluster_name] = "" 
 default[:meniscus][:coordinator_db_adapter_name] = "mongodb"
+default[:meniscus][:coordinator_db_active] = true
 default[:meniscus][:coordinator_db_servers] = "localhost:27017"
 default[:meniscus][:coordinator_db_database] = "meniscus"
 default[:meniscus][:coordinator_db_username] = "test"
@@ -22,6 +24,7 @@ default[:meniscus][:coordinator_db_password] = "test"
 
 default[:meniscus][:short_term_store_cluster_name] = ""
 default[:meniscus][:short_term_store_adapter_name] = "mongodb"
+default[:meniscus][:short_term_store_active] = true
 default[:meniscus][:short_term_store_servers] = "localhost:27017"
 default[:meniscus][:short_term_store_database] = "meniscus"
 default[:meniscus][:short_term_store_username] = "test"
@@ -30,8 +33,9 @@ default[:meniscus][:short_term_store_password] = "test"
 default[:meniscus][:data_sinks_valid_sinks] = "elasticsearch"
 default[:meniscus][:data_sinks_default_sink] = "elasticsearch"
 
-default[:meniscus][:elasticsearch_sink_cluster_name] = ""
-default[:meniscus][:default_sink_adapter_name] = "elasticsearch" 
+default[:meniscus][:default_sink_cluster_name] = ""
+default[:meniscus][:default_sink_adapter_name] = "elasticsearch"
+default[:meniscus][:default_sink_active] = true 
 default[:meniscus][:default_sink_servers] = "localhost:9200"
 default[:meniscus][:default_sink_index] = "logs-dev"
 default[:meniscus][:default_sink_bulk_size] = "100"
@@ -48,6 +52,8 @@ default[:meniscus][:celery_concurrency] = "7"
 default[:meniscus][:celery_disbale_rate_limits] = true
 default[:meniscus][:celery_task_serializer] = "json"
 
+default[:meniscus][:uwsgi_protocol] = "http"
+default[:meniscus][:uwsgi_processes] = "7"
 default[:meniscus][:uwsgi_cache_expires] = 900
 default[:meniscus][:uwsgi_paste_file] = "/etc/meniscus/meniscus-paste.ini"
 

@@ -10,6 +10,7 @@ log_file = <%= @log_file %>
 #datastore used by coordinator to store worker and tenant configurations
 [coordinator_db]
 adapter_name = <%= @coordinator_db_adapter_name %>
+active = <%= @coordinator_db_active %>
 servers = <%= @coordinator_db_servers %>
 database = <%= @coordinator_db_database %>
 username = <%= @coordinator_db_username %>
@@ -18,6 +19,7 @@ password = <%= @coordinator_db_password %>
 #datastore for short term storage of log messages before dispatching to sinks
 [short_term_store]
 adapter_name = <%= @short_term_store_adapter_name %>
+active = <%= @short_term_store_active %>
 servers = <%= @short_term_store_servers %>
 database = <%= @short_term_store_database %>
 username = <%= @short_term_store_username %>
@@ -32,6 +34,7 @@ default_sink = <%= @data_sinks_default_sink %>
 #connection parameters for default sink
 [default_sink]
 adapter_name = <%= @default_sink_adapter_name %>
+active = <%= @default_sink_active %>
 servers = <%= @default_sink_servers %>
 index = <%= @default_sink_index %>
 bulk_size = <%= @default_sink_bulk_size %>
