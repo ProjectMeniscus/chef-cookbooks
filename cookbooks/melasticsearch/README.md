@@ -1,4 +1,4 @@
-es_dev Cookbook
+melasticsearch Cookbook
 ===============
 TODO: Enter the cookbook description here.
 
@@ -11,14 +11,14 @@ TODO: List your cookbook requirements. Be sure to include any requirements this 
 
 e.g.
 #### packages
-- `toaster` - es_dev needs toaster to brown your bagel.
+- `toaster` - melasticsearch needs toaster to brown your bagel.
 
 Attributes
 ----------
 TODO: List you cookbook attributes here.
 
 e.g.
-#### es_dev::default
+#### melasticsearch::default
 <table>
   <tr>
     <th>Key</th>
@@ -27,7 +27,7 @@ e.g.
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['es_dev']['bacon']</tt></td>
+    <td><tt>['melasticsearch']['bacon']</tt></td>
     <td>Boolean</td>
     <td>whether to include bacon</td>
     <td><tt>true</tt></td>
@@ -40,13 +40,13 @@ Usage
 TODO: Write usage instructions for each cookbook.
 
 e.g.
-Just include `es_dev` in your node's `run_list`:
+Just include `melasticsearch` in your node's `run_list`:
 
 ```json
 {
   "name":"my_node",
   "run_list": [
-    "recipe[es_dev]"
+    "recipe[melasticsearch]"
   ]
 }
 ```
