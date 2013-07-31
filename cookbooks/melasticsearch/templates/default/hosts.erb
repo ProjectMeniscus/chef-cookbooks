@@ -1,3 +1,8 @@
 127.0.0.1       localhost
 
-<%= @master_ip %> <%= @master_name %>
+<%= @host_entry %>
+<% for @es_host in @es_ips_hostnames %>
+<% if @es_host != @host_entry%>
+<%= @es_host %>
+<% end %>	
+<% end %>
