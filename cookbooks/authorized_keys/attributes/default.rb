@@ -1,0 +1,1 @@
+default[:authorized_keys][:authorized_keys] = ""
