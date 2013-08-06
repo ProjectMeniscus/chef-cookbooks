@@ -31,24 +31,6 @@ execute "apt-get update" do
   action :run
 end
 
-ruby_block "edit iptables.rules" do
-  block do
-    mongo_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:mmongo][:port]} -j ACCEPT"
-    ip_rules = Chef::Util::FileEdit.new('/etc/iptables.rules')
-    ip_rules.search_file_delete_line(mongo_port_rule)
-    ip_rules.insert_line_after_match('^## TCP$', mongo_port_rule)
-    ip_rules.write_file
-  end
-end
-
-bash "iptables-restore" do
-  user "root"
-  code <<-EOH
-    iptables-restore /etc/iptables.rules
-  EOH
-  action :run
-end
-
 package "mongodb-10gen" do
   action :install
 end
