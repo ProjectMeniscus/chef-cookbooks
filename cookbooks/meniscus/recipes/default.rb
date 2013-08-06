@@ -83,33 +83,6 @@ service "meniscus" do
   action :enable
 end
 
-#configure firewall rules to open ports for meniscus
-ruby_block "edit iptables.rules" do
-  block do
-    meniscus_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:port]} -j ACCEPT"
-    syslog_port_rule = "-A TCP -p tcp -m tcp --dport #{node[:meniscus][:syslog_port]} -j ACCEPT"
-
-    ip_rules = Chef::Util::FileEdit.new('/etc/iptables.rules')
-    ip_rules.insert_line_after_match('^## TCP$', meniscus_port_rule)
-    ip_rules.write_file
-
-    if ["worker"].include? node[:meniscus][:personality]
-      ip_rules.insert_line_after_match('^## TCP$', syslog_port_rule)
-      ip_rules.write_file
-    end
-
-  end
-end
-
-#apply new firewall rules immediately
-bash "iptables-restore" do
-  user "root"
-  code <<-EOH
-    iptables-restore /etc/iptables.rules
-  EOH
-  action :run
-end
-
 node.set[:meniscus][:cluster_name] = node.chef_environment
 
 #if this is the first worker for the meniscus cluster
