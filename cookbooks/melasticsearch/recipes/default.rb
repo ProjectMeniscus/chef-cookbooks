@@ -8,15 +8,13 @@ template "/etc/security/limits.conf" do
   source "limits.conf.erb"
 end
 
-#Run a bash shell -  download, install and run ES
-bash "install elasticsearch" do
-     user "root"
-     cwd "/tmp/"
-     code <<-EOH
-       wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.2.deb
-       sudo dpkg -i elasticsearch-0.90.2.deb
-     sudo service elasticsearch start
-     EOH
+remote_file "/tmp/elasticsearch-0.90.2.deb" do
+  source   "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.2.deb"
+  mode 00644
+end
+
+dpkg_package "/tmp/elasticsearch-0.90.2.deb" do
+  action :install
 end
 
 #mod hosts file
