@@ -2,3 +2,4 @@
 .chef/
 .idea/
 *.iml
+knife_rackspace
