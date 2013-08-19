@@ -47,6 +47,11 @@ if node[:elasticsearch][:plugin_head]
     command "sudo /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
     action :run
   end
+
+  execute "install bigdesk plugin" do
+    command "sudo /usr/share/elasticsearch/bin/plugin -install lukas-vlcek/bigdesk"
+    action :run
+  end
 end
 
 host_entry = "#{node[:rackspace][:private_ip]}\t#{node[:hostname]}\n"

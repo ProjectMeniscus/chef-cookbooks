@@ -113,6 +113,15 @@ short_term_store_nodes.each do |short_term_store_node|
   node.set[:meniscus][:short_term_store_servers] = short_term_store_ip.join(',')
 end
 
+#search chef server for the elasticsearch nodes
+es_nodes = search(:node, "elasticsearch_cluster_name:#{node.environment}")
+#create a new array containg only the ip_address:port_no for each of the es nodes
+es_nodes_ip = []
+es_nodes.each do |es_node|
+  es_nodes_ip.push([es_node[:rackspace][:private_ip], es_node[:elasticsearch][:port]].join(':'))
+  node.set[:meniscus][:default_sink_servers] = es_nodes_ip.join(',')
+end
+
 coordinator_db_settings = data_bag_item(node.chef_environment, node[:meniscus][:coordinator_db_databag_item])
 coordinator_db_username = coordinator_db_settings["meniscus_user"]
 coordinator_db_password = coordinator_db_settings["meniscus_pass"]
