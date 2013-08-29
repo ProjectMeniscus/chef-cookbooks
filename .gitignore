@@ -3,3 +3,4 @@
 .idea/
 *.iml
 knife_rackspace
+.DS_Store

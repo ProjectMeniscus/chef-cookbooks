@@ -13,3 +13,6 @@
 [submodule "cookbooks/newrelic"]
 	path = cookbooks/newrelic
 	url = git@github.com:stevendgonzales/chef-newrelic.git
+[submodule "cookbooks/meetme-newrelic-plugin"]
+	path = cookbooks/meetme-newrelic-plugin
+	url = https://github.com/stevendgonzales/chef-meetme-newrelic-plugin.git
