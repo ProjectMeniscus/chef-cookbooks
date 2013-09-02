@@ -47,7 +47,7 @@ default[:meniscus][:hdfs_sink_base_directory] = "user/hdfs/laas"
 default[:meniscus][:hdfs_sink_transaction_expire] = 300
 default[:meniscus][:hdfs_sink_transfer_frequency] = 60
 
-default[:meniscus][:celery_broker_url] = "librabbitmq://guest@localhost//"
+default[:meniscus][:celery_broker_url] = "librabbitmq://guest:guest@localhost:5672//"
 default[:meniscus][:celery_concurrency] = "7"
 default[:meniscus][:celery_disbale_rate_limits] = true
 default[:meniscus][:celery_task_serializer] = "json"

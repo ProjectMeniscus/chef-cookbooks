@@ -18,17 +18,18 @@
 #
 
 include_recipe 'apt'
+include_recipe 'rabbitmq'
 
-apt_repository "rabbitmq" do
-  uri "http://www.rabbitmq.com/debian/"
-  distribution "testing"
-  components ["main"]
-  key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
-end
+#apt_repository "rabbitmq" do
+#  uri "http://www.rabbitmq.com/debian/"
+#  distribution "testing"
+#  components ["main"]
+#  key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
+#end
 
- package "rabbitmq-server" do
-  action :install
-end
+# package "rabbitmq-server" do
+#  action :install
+#end
 
 
 #Add Meniscus repository
