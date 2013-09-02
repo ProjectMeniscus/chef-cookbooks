@@ -1,2 +1,1 @@
-default[:ntp][:config_file] = '/etc/ntp.conf'
-default[:ntp][:authorized_servers] = []
+default['ntp']['servers']   = %w{ time.rackspace.com ntp.ubuntu.com }

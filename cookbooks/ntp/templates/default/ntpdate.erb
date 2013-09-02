@@ -1,0 +1,4 @@
+NTPSERVERS="<% node['ntp']['servers'].each do |ntpserver| -%><%= ntpserver %> <% end %>"
+
+# Additional options to pass to ntpdate
+NTPOPTIONS=""
