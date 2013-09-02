@@ -1,1 +1,1 @@
-default['ntp']['servers']   = %w{ time.rackspace.com ntp.ubuntu.com }
+default['ntp']['servers'] = %w{ time.rackspace.com }
