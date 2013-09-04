@@ -1,4 +1,4 @@
-name             'ntp'
+name             'Projectmeniscus.org'
 maintainer       'Rackspace'
 maintainer_email 'logging@lists.rackspace.com'
 license          'All rights reserved'
