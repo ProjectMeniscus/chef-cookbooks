@@ -4,9 +4,21 @@ Installs the cloud passage agent for controlling firewalls.
 
 Requirements
 ------------
+Chef 10.18.2 
 
-#### packages
-- `apt`
+Platform
+--------
+- Ubuntu
+
+Tested on:
+- Ubuntu 12.04
+
+Cookbooks
+---------
+Requires `apt`
+
+Tested with:
+`apt` [cookbook](https://github.com/opscode-cookbooks/apt/tree/fbeb0d4f75fcd9906ca9f860983f13bf46fd96c5) release v1.9.0
 
 Attributes
 ----------
