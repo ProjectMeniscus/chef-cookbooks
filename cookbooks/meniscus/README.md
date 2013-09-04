@@ -82,7 +82,7 @@ Attributes
 * `default[:meniscus][:hdfs_sink_transfer_frequency]` - `Integer` - hdfs sink transfer frequency
 
 #### Meniscus default celery attributes
-* `default[:meniscus][:celery_broker_url]` - `String` - celery broker uri
+* `default[:meniscus][:celery_broker_url]` - `String` - celery broker url
 * `default[:meniscus][:celery_concurrency]` - `String` - celery concurrency
 * `default[:meniscus][:celery_disbale_rate_limits]` - `Boolean` - Is celery rate limiting disabled
 * `default[:meniscus][:celery_task_serializer]` - `String` - Celery task serializer format
