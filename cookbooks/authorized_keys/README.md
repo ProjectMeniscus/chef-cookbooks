@@ -4,9 +4,14 @@ This is the default development template for all boxes spun up for meniscus deve
 
 Requirements
 ------------
+Chef 10.18.2 
 
-#### packages
-- `none`
+Platform
+--------
+- Ubuntu
+
+Tested on:
+- Ubuntu 12.04
 
 Attributes
 ----------
