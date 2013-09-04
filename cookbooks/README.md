@@ -2,7 +2,10 @@ This directory contains the cookbooks used to configure systems in your Meniscus
 
 Cookbooks
 =========
-
-* `dev-template` - Baseline configuration for all nodes.
-* `meniscus` - Meniscus components. Default recipe installs worker prerequisites.
-* `mmongo` - MongoDB configuration for data store nodes.
+* `authorized_keys`- Inserts authorized keys in meniscus nodes
+* `cloudpassage` - Installs cloud passage
+* `hostname` - Configures node hostnames
+* `melasticsearch` - Installs Elasticsearch and configuration for data store nodes.
+* `meniscus` - Installs Meniscus application
+* `mmongo` - Installs MongoDB and configuration for data store nodes.
+* `ntp` - Network Time Protocal cronjob 
