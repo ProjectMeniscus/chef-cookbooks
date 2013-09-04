@@ -9,4 +9,4 @@ APT
 License and Authors
 -------------------
 Authors: Taz El-Kikhia
-         Stephen Gonzales
+         Steven Gonzales
