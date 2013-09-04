@@ -96,7 +96,7 @@ Attributes
 #### Meniscus default json, liblognorm and ethernet attributes
 * `default[:meniscus][:json_schema_dir]` - `String` - json schema directory location
 * `default[:meniscus][:liblognorm_rules_dir]` - `String` - liblognorm rules directory location
-* `default[:meniscus][:default_ifname]` - `String` - Default ethernet card
+* `default[:meniscus][:default_ifname]` - `String` - Default interface name (eth0, eth1...)
 
 #### Meniscus default cache attributes
 * `default[:meniscus][:uwsgi_config_cache_items]` - `Integer` - number of cached uwsgi configuration items
