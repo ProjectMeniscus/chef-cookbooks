@@ -18,8 +18,11 @@ Tested on:
 
 Cookbooks
 ---------
-#### packages
-- `python` - Meniscus is written in Python.
+Requires `apt` - Installs meniscus debian package from debian repository
+
+Tested with:
+`apt` [cookbook](https://github.com/opscode-cookbooks/apt/tree/fbeb0d4f75fcd9906ca9f860983f13bf46fd96c5) release v1.9.0
+
 
 Attributes
 ----------
