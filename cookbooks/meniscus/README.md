@@ -29,14 +29,14 @@ Attributes
 * `default[:meniscus][:cluster_name]` - `String` - Name of meniscus cluster
 * `default[:meniscus][:port]` - `String` - Port number the meniscus instance should bind to
 * `default[:meniscus][:syslog_port]` - `String` - Port number that incoming syslog messages will bind to
-* `default[:meniscus][:auto_upgrade]` - `Boolean` - Auto upgrade option for meniscus instance
+* `default[:meniscus][:auto_upgrade]` - `Boolean` - Will apt-upgrade meniscus application automatically
 
 #### meniscus python and configuration attributes
 * `default[:meniscus][:pynopath]` - `String` - Python Path on meniscus instance
 * `default[:meniscus][:config_file]` - `String` - Location of meniscus configuration file
 
 #### meniscus instance logging attributes
-* `default[:meniscus][:log_debug]` - `Boolean` - Sets debug mode for meniscus logging
+* `default[:meniscus][:log_debug]` - `Boolean` - Debug mode for meniscus logging
 * `default[:meniscus][:log_file]` - `String` - Location of meniscus log file
 
 #### Meniscus pairing attributes
