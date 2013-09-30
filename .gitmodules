@@ -25,9 +25,6 @@
 [submodule "cookbooks/logrotate"]
 	path = cookbooks/logrotate
 	url = https://github.com/opscode-cookbooks/logrotate.git
-[submodule "cookbooks/chef-kibana"]
-	path = cookbooks/chef-kibana
-	url = https://github.com/lusis/chef-kibana.git
 [submodule "cookbooks/nginx"]
 	path = cookbooks/nginx
 	url = https://github.com/opscode-cookbooks/nginx.git
