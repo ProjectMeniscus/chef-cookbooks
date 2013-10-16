@@ -22,6 +22,9 @@
 [submodule "cookbooks/erlang"]
 	path = cookbooks/erlang
 	url = https://github.com/opscode-cookbooks/erlang.git
+[submodule "cookbooks/ntp"]
+	path = cookbooks/ntp
+	url = https://github.com/opscode-cookbooks/ntp.git
 [submodule "cookbooks/logrotate"]
 	path = cookbooks/logrotate
 	url = https://github.com/opscode-cookbooks/logrotate.git
