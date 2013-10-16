@@ -23,5 +23,5 @@ platforms:
 
 suites:
 - name: default
-  run_list: ["recipe[chef-portal]"]
+  run_list: ["recipe[portal]"]
   attributes: {}

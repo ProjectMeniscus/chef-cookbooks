@@ -1,5 +1,5 @@
-name             'chef-portal'
-maintainer       'YOUR_NAME'
+name             'portal'
+maintainer       'almutaz.el-kikhia@rackspace.com'
 maintainer_email 'almutaz.el-kikhia@rackspace.com'
 license          'Apache 2.0'
 description      'Installs/Configures meniscus-portal'
