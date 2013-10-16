@@ -52,6 +52,12 @@ service "meniscus-portal" do
   action [ :enable, :start ]
 end
 
+# chef solo?
+unless Chef::Config[:solo]
+  node.set['meniscus_portal']['syslog_bind_host'] = node[:rackspace][:private_ip]
+  node.set['meniscus_portal']['zmq_bind_host'] = node[:rackspace][:private_ip]
+end
+
 #write portal config file
 template "#{node['meniscus_portal']['config_dir']}/portal.conf" do
   source "portal.conf.erb"

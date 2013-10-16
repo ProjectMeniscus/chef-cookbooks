@@ -1,7 +1,7 @@
 [core]
 processes = <%= node['meniscus_portal']['processes'] %>
-syslog_bind_host = <%= node[:ipaddress] %>:<%= node['meniscus_portal']['syslog_bind_port'] %>
-zmq_bind_host = <%= node[:ipaddress] %>:<%= node['meniscus_portal']['zmq_bind_port'] %>
+syslog_bind_host = <%= node['meniscus_portal']['syslog_bind_host'] %>:<%= node['meniscus_portal']['syslog_bind_port'] %>
+zmq_bind_host = <%= node['meniscus_portal']['zmq_bind_host'] %>:<%= node['meniscus_portal']['zmq_bind_port'] %>
 
 [logging]
 console = <%= node['meniscus_portal']['console'] %>
