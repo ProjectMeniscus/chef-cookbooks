@@ -9,6 +9,10 @@ server {
     index  index.html  index.htm; 
   }
 
+  location ~ ^/v1/auth$ {
+    proxy_pass http://<%= @keystone_server %>:<%= @keystone_port %>;
+    proxy_read_timeout 90;
+  }
   location ~ ^/_aliases$ {
     proxy_pass http://<%= @es_server %>:<%= @es_port %>;
     proxy_read_timeout 90;

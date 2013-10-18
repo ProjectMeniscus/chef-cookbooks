@@ -59,20 +59,4 @@ template "#{node['kibana']['installdir']}/current/config.js" do
   user kibana_user
 end
 
-#write index.html file
-template "#{node['kibana']['installdir']}/current/index.html" do
-  source node['kibana']['config_index']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
-  user kibana_user
-end
-
-#write default dashboard file
-template "#{node['kibana']['installdir']}/current/app/dashboards/default.json" do
-  source node['kibana']['config_dashboard']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
-  user kibana_user
-end
-
 include_recipe "kibana::#{node['kibana']['webserver']}"

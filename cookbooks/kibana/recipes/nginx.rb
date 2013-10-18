@@ -29,6 +29,8 @@ template "/etc/nginx/sites-available/kibana" do
   variables(
     :es_server => node['kibana']['es_server'],
     :es_port   => node['kibana']['es_port'],
+    :keystone_server => node['kibana']['keystone_server'],
+    :keystone_port   => node['kibana']['keystone_port'],
     :server_name => node['kibana']['webserver_hostname'],
     :server_aliases => node['kibana']['webserver_aliases'],
     :kibana_dir => node['kibana']['installdir'],
