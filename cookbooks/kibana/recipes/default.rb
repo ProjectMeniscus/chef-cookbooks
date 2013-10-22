@@ -24,7 +24,7 @@ include_recipe "nginx"
 unless Chef::Config[:solo]
   es_server_results = search(:node, "roles:#{node['kibana']['es_role']} AND chef_environment:#{node.chef_environment}")
   unless es_server_results.empty?
-    node.set['kibana']['es_server'] = es_server_results[0]['ipaddress']
+    node.set['kibana']['proxy_server'] = es_server_results[0]['ipaddress']
   end
 end
 
@@ -50,29 +50,6 @@ end
 
 link "#{node['kibana']['installdir']}/current" do
   to "#{node['kibana']['installdir']}/#{node['kibana']['branch']}/src"
-end
-
-template "#{node['kibana']['installdir']}/current/config.js" do
-  source node['kibana']['config_template']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
-  user kibana_user
-end
-
-#write index.html file
-template "#{node['kibana']['installdir']}/current/index.html" do
-  source node['kibana']['config_index']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
-  user kibana_user
-end
-
-#write default dashboard file
-template "#{node['kibana']['installdir']}/current/app/dashboards/default.json" do
-  source node['kibana']['config_dashboard']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
-  user kibana_user
 end
 
 include_recipe "kibana::#{node['kibana']['webserver']}"
