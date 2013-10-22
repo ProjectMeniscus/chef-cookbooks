@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
   # network interface) by any external networks.
   config.vm.network :private_network, ip: "33.33.33.10"
   config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.vm.network :forwarded_port, guest: 5000, host: 50
 
   config.ssh.max_tries = 40
   config.ssh.timeout   = 120
@@ -29,10 +30,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :chef_solo do |chef|
     chef.json = {
-      :mysql => {
-        :server_root_password => 'rootpass',
-        :server_debian_password => 'debpass',
-        :server_repl_password => 'replpass'
+      :kibana => {
+        :pyrox_server => "162.209.14.12",
+        :keystone_server => "keystone-stg.projectmeniscus.org",
       }
     }
 

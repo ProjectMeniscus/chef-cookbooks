@@ -27,8 +27,8 @@ template "/etc/nginx/sites-available/kibana" do
   cookbook node['kibana']['nginx']['template_cookbook']
   notifies :reload, "service[nginx]"
   variables(
-    :es_server => node['kibana']['es_server'],
-    :es_port   => node['kibana']['es_port'],
+    :pyrox_server => node['kibana']['pyrox_server'],
+    :pyrox_port   => node['kibana']['pyrox_port'],
     :keystone_server => node['kibana']['keystone_server'],
     :keystone_port   => node['kibana']['keystone_port'],
     :server_name => node['kibana']['webserver_hostname'],

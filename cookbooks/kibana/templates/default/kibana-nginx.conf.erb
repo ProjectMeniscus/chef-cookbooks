@@ -9,29 +9,30 @@ server {
     index  index.html  index.htm; 
   }
 
-  location ~ ^/v1/auth$ {
-    proxy_pass http://<%= @keystone_server %>:<%= @keystone_port %>;
+  location /v1/auth {
+    include /etc/nginx/mime.types;
+    proxy_pass http://<%= @keystone_server %>:<%= @keystone_port %>/v2.0/tokens;
     proxy_read_timeout 90;
   }
   location ~ ^/_aliases$ {
-    proxy_pass http://<%= @es_server %>:<%= @es_port %>;
+    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
     proxy_read_timeout 90;
   }
   location ~ ^/.*/_search$ {
-    proxy_pass http://<%= @es_server %>:<%= @es_port %>;
+    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
     proxy_read_timeout 90;
   }
   location ~ ^/.*/_mapping$ {
-    proxy_pass http://<%= @es_server %>:<%= @es_port %>;
+    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
     proxy_read_timeout 90;
   }
   # Password protected end points
   location ~ ^/kibana-int/dashboard/.*$ {
-    proxy_pass http://<%= @es_server %>:<%= @es_port %>;
+    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
     proxy_read_timeout 90;
   }
   location ~ ^/kibana-int/temp.*$ {
-    proxy_pass http://<%= @es_server %>:<%= @es_port %>;
+    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
     proxy_read_timeout 90;
   }
 }
