@@ -29,12 +29,12 @@ Vagrant.configure("2") do |config|
   config.berkshelf.enabled = true
 
   config.vm.provision :chef_solo do |chef|
-    # chef.json = {
-    #   :kibana => {
-    #     :pyrox_server => "localhost",
-    #     :keystone_server => "localhost",
-    #   }
-    # }
+    chef.json = {
+      :kibana => {
+        :pyrox_server => "localhost",
+        :keystone_server => "localhost"
+      }
+    }
 
     chef.run_list = [
         "recipe[kibana::default]"
