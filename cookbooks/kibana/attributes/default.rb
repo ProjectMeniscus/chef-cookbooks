@@ -11,8 +11,8 @@ default['kibana']['webserver_listen'] = node.ipaddress
 default['kibana']['webserver_port'] = 80
 
 # elasticsearch attributes
-default['kibana']['pyrox_server'] = "localhost"
-default['kibana']['pyrox_port'] = 9200
+default['kibana']['proxy_server'] = "localhost"
+default['kibana']['proxy_port'] = 9200
 default['kibana']['es_role'] = "elasticsearch_server"
 
 #keystone attributes
