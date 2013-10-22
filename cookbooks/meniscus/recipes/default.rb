@@ -155,6 +155,7 @@ template "/etc/meniscus/meniscus.conf" do
       :default_sink_servers => node[:meniscus][:default_sink_servers],
       :default_sink_index => node[:meniscus][:default_sink_index],
       :default_sink_bulk_size => node[:meniscus][:default_sink_bulk_size],
+      :default_sink_ttl => node[:meniscus][:default_sink_ttl],
       :hdfs_sink_hostname => node[:meniscus][:hdfs_sink_hostname],
       :hdfs_sink_port => node[:meniscus][:hdfs_sink_port],
       :hdfs_sink_user_name => node[:meniscus][:hdfs_sink_user_name],
@@ -170,12 +171,6 @@ template "/etc/meniscus/meniscus.conf" do
       :liblognorm_rules_dir => node[:meniscus][:liblognorm_rules_dir],
       :default_ifname => node[:meniscus][:default_ifname ]
     )
-    notifies :restart, "service[meniscus]", :immediately
-end
-
-
-template "/etc/meniscus/meniscus-paste.ini" do
-    source "meniscus-paste.ini.erb"
     notifies :restart, "service[meniscus]", :immediately
 end
 

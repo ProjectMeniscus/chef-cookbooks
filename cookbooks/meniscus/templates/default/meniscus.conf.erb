@@ -38,6 +38,8 @@ active = <%= @default_sink_active %>
 servers = <%= @default_sink_servers %>
 index = <%= @default_sink_index %>
 bulk_size = <%= @default_sink_bulk_size %>
+#ttl is specified in days
+ttl = <%= @default_sink_ttl %>
 
 
 #connection arguments for HDFS sink (connecting through WebHDFS Rest API)

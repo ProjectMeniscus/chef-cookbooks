@@ -1,7 +1,7 @@
 
 default[:elasticsearch][:port] = "9200"
 default[:elasticsearch][:cluster_port] = "9300"
-default[:elasticsearch][:es_heap_size] = "256m"
+default[:elasticsearch][:heap_size_percent] = 60
 default[:elasticsearch][:plugin_head] = false
 
 default[:elasticsearch][:discovery_zen_ping_unicast_hosts] = nil
@@ -13,9 +13,19 @@ default[:elasticsearch][:gateway_expected_nodes] = 24
 default[:elasticsearch][:discovery_zen_minimum_master_nodes] = 3
 default[:elasticsearch][:discovery_zen_ping_multicast_enabled] = false
 default[:elasticsearch][:unicast_host_for_every_n_nodes] = 6
-default[:elasticsearch][:use_newrelic] = false
-default[:elasticsearch][:newrelic_plugin_url] = ""
-default[:elasticsearch][:newrelic_plugin_jar] = "elasticsearch-newrelic-master-0.0.1.jar"
+default[:elasticsearch][:mlockall] = true
+
+default[:elasticsearch][:index_buffer_size] = "50%"
+default[:elasticsearch][:ttl_interval] = "3600s"
+default[:elasticsearch][:ttl_bulk_size] = 10000
+default[:elasticsearch][:translog_flush_threshold_ops] = 50000
+default[:elasticsearch][:translog_flush_threshold_size] = "200mb"
+default[:elasticsearch][:translog_flush_threshold_period] = "30m"
+
+
+default[:elasticsearch][:package] = "elasticsearch-0.90.5.deb"
+default[:elasticsearch][:download_url] = "https://download.elasticsearch.org/elasticsearch/elasticsearch/"
+default[:elasticsearch][:download_dir] = "/tmp/"
 
 
 

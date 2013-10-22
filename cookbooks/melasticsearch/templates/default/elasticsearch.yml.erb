@@ -86,6 +86,22 @@ node.name: "<%= @hostname %>"
 # to disable it, set the following:
 # node.max_local_storage_nodes: 1
 
+################################### Indices ###################################
+# The indexing buffer setting allows to control how much memory will be allocated for the indexing process. It is a global setting that bubbles down to all 
+# the different shards allocated on a specific node.
+#
+# The indices.memory.index_buffer_size accepts either a percentage or a byte size value. It defaults to 10%, meaning that 10% of the total memory allocated
+# to a node will be used as the indexing buffer size. This amount is then divided between all the different shards. Also, if percentage is used, allow to 
+# set min_index_buffer_size (defaults to 48mb) and max_index_buffer_size which by default is unbounded.
+
+indices.memory.index_buffer_size: <%= @index_buffer_size %>
+
+#You can dynamically set the indices.ttl.interval allows to set how often expired documents will be automatically deleted. The default value is 60s.
+
+indices.ttl.interval: <%= @ttl_interval %>
+
+#The deletion orders are processed by bulk. You can set indices.ttl.bulk_size to fit your needs. The default value is 10000.
+indices.ttl.bulk_size: <%= @ttl_bulk_size %>
 
 #################################### Index ####################################
 
@@ -135,6 +151,20 @@ index.number_of_replicas: <%= @num_replicas %>
 # Use the Index Status API (<http://localhost:9200/A/_status>) to inspect
 # the index status.
 
+# Each shard has a transaction log or write ahead log associated with it. It allows 
+# to guarantee that when an index/delete operation occurs, it is applied atomically, 
+# while not "committing" the internal Lucene index for each request. A flush 
+# ("commit") still happens based on several parameters:
+
+# After how many operations to flush. Defaults to 5000
+index.translog.flush_threshold_ops: <%= @translog_flush_threshold_ops %>
+
+# Once the translog hits this size, a flush will happen. Defaults to 200mb
+index.translog.flush_threshold_size: <%= @translog_flush_threshold_size %>
+
+# The period with no flush happening to force a flush. Defaults to 30m
+index.translog.flush_threshold_period: <%= @translog_flush_threshold_period %>
+
 
 #################################### Paths ####################################
 
@@ -179,7 +209,7 @@ index.number_of_replicas: <%= @num_replicas %>
 #
 # Set this property to true to lock the memory:
 #
-# bootstrap.mlockall: true
+bootstrap.mlockall: <%= @mlockall %>
 
 # Make sure that the ES_MIN_MEM and ES_MAX_MEM environment variables are set
 # to the same value, and that the machine has enough memory to allocate

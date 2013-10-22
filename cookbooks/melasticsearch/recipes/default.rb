@@ -9,33 +9,59 @@ template "/etc/security/limits.conf" do
 end
 
 #downlod elasticsearch package
-remote_file "/tmp/elasticsearch-0.90.3.deb" do
-  source   "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.3.deb"
+remote_file node[:elasticsearch][:download_dir] + node[:elasticsearch][:package] do
+  source node[:elasticsearch][:download_url] + node[:elasticsearch][:package]
   mode 00644
 end
 
 #install elasticsearch
-dpkg_package "/tmp/elasticsearch-0.90.3.deb" do
+dpkg_package node[:elasticsearch][:download_dir] + node[:elasticsearch][:package] do
   action :install
   options "--force-confold"
-end
-
-#mod elasticsearch init script
-template "/etc/init.d/elasticsearch" do
-  source "elasticsearch_initd.erb"
-  variables(
-    :es_heap_size => node[:elasticsearch][:es_heap_size]
-  )
-end
-
-#write shell script setting $JAVA_OPTS
-template "/usr/share/elasticsearch/bin/elasticsearch.in.sh" do
-  source "elasticsearch.in.sh.erb"
 end
 
 #define elasticsearch service
 service "elasticsearch" do
   supports :restart => true, :start => true, :stop => true, :status => true
+  action :enable
+end
+
+#set heap_size as a percentage of ram
+memory_total = node[:memory][:total]
+memory_total.slice! "kB"
+
+memory = memory_total.to_i
+es_heap_size_kb = memory * node[:elasticsearch][:heap_size_percent] / 100
+es_heap_size_mb = es_heap_size_kb / 1024
+es_heap_size_mb = es_heap_size_mb.ceil
+es_heap_size = "#{es_heap_size_mb}m"
+
+
+node[:elasticsearch][:es_heap_size]
+#mod elasticsearch init script
+template "/etc/init.d/elasticsearch" do
+  source "elasticsearch_initd.erb"
+  variables(
+    :es_heap_size => es_heap_size
+  )
+end
+
+execute "install head plugin" do
+  not_if  { ::File.exists?("/usr/share/elasticsearch/plugins/head") }
+  command "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
+  action :run
+end
+
+execute "install ElasticHQ plugin" do
+  not_if  { ::File.exists?("/usr/share/elasticsearch/plugins/HQ") }
+  command "/usr/share/elasticsearch/bin/plugin -install royrusso/elasticsearch-HQ"
+  action :run
+end
+
+execute "install bigdesk plugin" do
+  not_if  { ::File.exists?("/usr/share/elasticsearch/plugins/bigdesk") }
+  command "/usr/share/elasticsearch/bin/plugin -install lukas-vlcek/bigdesk"
+  action :run
 end
 
 #name the cluster after the chef environment this node is edployed in
@@ -43,49 +69,6 @@ node.set[:elasticsearch][:cluster_name] = node.environment
 
 #Get the list of nodes that belong to this elatic search cluster
 es_nodes = search(:node, "elasticsearch_cluster_name:#{node[:elasticsearch][:cluster_name]}")
-
-#if there are no nodes that have the plugin_head install, install it on this node
-plugin_head_nodes = es_nodes.select {|i| i[:elasticsearch][:plugin_head] == true}
-if plugin_head_nodes.empty?
-  node.set[:elasticsearch][:plugin_head] = true
-else
-  node.set[:elasticsearch][:plugin_head] = false
-end
-
-#if this is the plugin head node, install the head and bigdesk plugins
-
-execute "install head plugin" do
-  only_if {node[:elasticsearch][:plugin_head]}
-  command "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
-  action :run
-end
-
-execute "install bigdesk plugin" do
-  only_if {node[:elasticsearch][:plugin_head]}
-  command "/usr/share/elasticsearch/bin/plugin -install lukas-vlcek/bigdesk"
-  action :run
-end
-
-newrelic_plaugin_jar_location = "/tmp/#{node[:elasticsearch][:newrelic_plugin_jar]}"
-#if use new relic is set to true, install the new_relic plugin if necessary
-remote_file newrelic_plaugin_jar_location do
-  only_if {node[:elasticsearch][:use_newrelic]}
-  source   node[:elasticsearch][:newrelic_plugin_url]
-  mode 0644
-  notifies :run, "execute[install-newrelic-plugin]", :immediately
-end
-
-execute "install-newrelic-plugin" do
-  command "/usr/share/elasticsearch/bin/plugin -u file://#{newrelic_plaugin_jar_location} -install newrelic"
-  action :nothing 
-end
-
-group "newrelic" do
-  only_if {node[:elasticsearch][:use_newrelic]}
-  action :modify
-  members "elasticsearch"
-  append true
-end
 
 #get the ip and hostname for this node
 host_entry = "#{node[:rackspace][:private_ip]}\t#{node[:hostname]}\n"
@@ -141,7 +124,14 @@ template "/etc/elasticsearch/elasticsearch.yml" do
     :gateway_expected_nodes => node[:elasticsearch][:gateway_expected_nodes],
     :discovery_zen_minimum_master_nodes => node[:elasticsearch][:discovery_zen_minimum_master_nodes],
     :discovery_zen_ping_multicast_enabled => node[:elasticsearch][:discovery_zen_ping_multicast_enabled],
-    :discovery_zen_ping_unicast_hosts => node[:elasticsearch][:discovery_zen_ping_unicast_hosts] 
+    :discovery_zen_ping_unicast_hosts => node[:elasticsearch][:discovery_zen_ping_unicast_hosts],
+    :mlockall => node[:elasticsearch][:mlockall],
+    :index_buffer_size => node[:elasticsearch][:index_buffer_size],
+    :ttl_interval => node[:elasticsearch][:ttl_interval],
+    :ttl_bulk_size => node[:elasticsearch][:ttl_bulk_size],
+    :translog_flush_threshold_ops => node[:elasticsearch][:translog_flush_threshold_ops],
+    :translog_flush_threshold_size => node[:elasticsearch][:translog_flush_threshold_size],
+    :translog_flush_threshold_period => node[:elasticsearch][:translog_flush_threshold_period]
   )
   notifies :restart, resources(:service => "elasticsearch")
 end

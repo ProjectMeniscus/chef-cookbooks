@@ -39,6 +39,7 @@ default[:meniscus][:default_sink_active] = true
 default[:meniscus][:default_sink_servers] = "localhost:9200"
 default[:meniscus][:default_sink_index] = "logs-dev"
 default[:meniscus][:default_sink_bulk_size] = "100"
+default[:meniscus][:default_sink_ttl] = "30d"
 
 default[:meniscus][:hdfs_sink_hostname] = "localhost" 
 default[:meniscus][:hdfs_sink_port] = "50070"
@@ -55,7 +56,6 @@ default[:meniscus][:celery_task_serializer] = "json"
 default[:meniscus][:uwsgi_protocol] = "http"
 default[:meniscus][:uwsgi_processes] = "7"
 default[:meniscus][:uwsgi_cache_expires] = 900
-default[:meniscus][:uwsgi_paste_file] = "/etc/meniscus/meniscus-paste.ini"
 
 default[:meniscus][:json_schema_dir] = "/etc/meniscus/schemas/"
 default[:meniscus][:liblognorm_rules_dir] = "/etc/meniscus/normalizer_rules/"
