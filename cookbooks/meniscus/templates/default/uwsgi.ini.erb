@@ -16,8 +16,8 @@ env = CONFIG_FILE=<%= @config_file %>
 
 pythonpath = ./
 
+module = meniscus.app:application
+
 cache2 = name=cache-config,items=<%= @uwsgi_config_cache_items %>,store=cache-config
 cache2 = name=cache-tenant,items=<%= @uwsgi_tenant_cache_items %>
 cache2 = name=cache-token,items=<%= @uwsgi_token_cache_items %>
-
-paste = config:/etc/meniscus/meniscus-paste.ini
