@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: chef-portal
+# Cookbook Name:: portal
 # Recipe:: default
 #
 # Copyright (C) 2013 Rackspace

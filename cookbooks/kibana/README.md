@@ -5,8 +5,6 @@ A stand-alone cookbook for Kibana3
 Requirements
 ------------
 - apt
-- yum
-- apache2
 - nginx
 - git
 
