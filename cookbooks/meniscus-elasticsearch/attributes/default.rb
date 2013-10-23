@@ -1,5 +1,7 @@
 override[:java][:jdk_version] = "7"
 
+normal[:elasticsearch][:port] = "9200"
+normal[:elasticsearch][:http][:port] = "9200"
 normal[:elasticsearch][:cluster][:name] = node.environment
 normal[:elasticsearch][:plugins] = {
 	"lukas-vlcek/bigdesk" => {},
