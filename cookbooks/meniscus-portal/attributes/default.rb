@@ -1,0 +1,2 @@
+default[:meniscus][:personality] = "portal"
+
