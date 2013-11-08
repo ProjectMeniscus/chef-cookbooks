@@ -26,40 +26,23 @@ apt_repository "ProjectMeniscus" do
   components ["main"]
 end
 
-#update app definitions
-execute "apt-get update" do
-  command "apt-get update"
-  action :run
-end
-
 #install meniscus-portal from repo
 package "meniscus-portal" do
   action :install
   options "--force-yes"
 end
 
-  #upgrade meniscus-portal from repo
-if node[:meniscus_portal][:auto_upgrade]
-  package "meniscus-portal" do
-    action :upgrade
-    options "--force-yes"
-  end
-end
-
 #Define meniscus-portal service
 service "meniscus-portal" do
+  provider Chef::Provider::Service::Upstart
   supports :restart => true, :start => true, :stop => true
   action [ :enable, :start ]
 end
 
-# chef solo?
-unless Chef::Config[:solo]
-  node.set['meniscus_portal']['syslog_bind_host'] = node[:rackspace][:private_ip]
-  node.set['meniscus_portal']['zmq_bind_host'] = node[:rackspace][:private_ip]
-end
-
 #write portal config file
-template "#{node['meniscus_portal']['config_dir']}/portal.conf" do
+template "/etc/meniscus-portal/portal.conf" do
   source "portal.conf.erb"
+  owner "portal"
+  group "portal"
   notifies :restart, "service[meniscus-portal]", :immediately
 end
