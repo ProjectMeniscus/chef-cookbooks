@@ -1,5 +1,10 @@
 metadata
 
+cookbook 'authorized_keys', github: 'ProjectMeniscus/authorized_keys'
+cookbook 'cloudpassage', github: 'ProjectMeniscus/chef-cloudpassage'
+cookbook 'newrelic', github: 'escapestudios/chef-newrelic'
+
+cookbook 'base-template', path: '../base-template'
 cookbook 'apt', git: 'git://github.com/opscode-cookbooks/apt.git'
 cookbook 'java', git: 'git://github.com/opscode-cookbooks/java.git'
 cookbook 'elasticsearch', git: 'git@github.com:ProjectMeniscus/cookbook-elasticsearch.git'

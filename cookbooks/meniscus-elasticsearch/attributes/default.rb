@@ -1,3 +1,4 @@
+normal[:cloudpassage][:server_tag] = "#{node.environment}-elasticsearch"
 override[:java][:jdk_version] = "7"
 
 normal[:elasticsearch][:port] = "9200"
