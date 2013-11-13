@@ -1,1 +1,0 @@
-default[:cloudpassage][:license_key] = nil
