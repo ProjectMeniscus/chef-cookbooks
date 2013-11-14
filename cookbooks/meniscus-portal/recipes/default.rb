@@ -17,10 +17,6 @@
 # limitations under the License.
 #
 
-unless Chef::Config[:solo]
-	node.set[:meniscus_portal][:syslog_bind_host] = node[:rackspace][:private_ip]
-	node.set[:meniscus_portal][:zmq_bind_host] = node[:rackspace][:private_ip]
-end
-
+include_recipe 'base-template'
 include_recipe "portal"
 
