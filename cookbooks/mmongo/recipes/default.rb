@@ -16,8 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+include_recipe 'apt'
 
-#node[:rackspace][:private_ip]
 apt_repository "10gen" do
   uri "http://downloads-distro.mongodb.org/repo/ubuntu-upstart"
   distribution "dist"
