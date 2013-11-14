@@ -1,3 +1,4 @@
+default[:mmongo][:databag_name] = "mongo_databag"
 default[:mmongo][:databag_item] = nil
 default[:mmongo][:dbpath] = "/var/lib/mongodb"
 default[:mmongo][:logpath] = "/var/log/mongodb"
