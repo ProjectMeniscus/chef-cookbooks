@@ -2,66 +2,73 @@
 
 [DEFAULT]
 # Show debugging output in logs (sets DEBUG log level output)
-debug = <%= @log_debug %>
+debug = <%= node[:meniscus][:log_debug] %>
 
 # Log to this file
-log_file = <%= @log_file %>
+log_file = <%= node[:meniscus][:log_file] %>
+
+[node]
+#Set the node's personality
+personality = <%= node[:meniscus][:personality] %>
+
+# Set the URI of the Coordinator's load balancer or solo endpoint
+coordinator_uri = <%= node[:meniscus][:coordinator_uri] %>
 
 #datastore used by coordinator to store worker and tenant configurations
 [coordinator_db]
-adapter_name = <%= @coordinator_db_adapter_name %>
-active = <%= @coordinator_db_active %>
-servers = <%= @coordinator_db_servers %>
-database = <%= @coordinator_db_database %>
-username = <%= @coordinator_db_username %>
-password = <%= @coordinator_db_password %>
+adapter_name = <%= node[:meniscus][:coordinator_db_adapter_name] %>
+active = <%= node[:meniscus][:coordinator_db_active] %>
+servers = <%= node[:meniscus][:coordinator_db_servers] %>
+database = <%= node[:meniscus][:coordinator_db_database] %>
+username = <%= node[:meniscus][:coordinator_db_username] %>
+password = <%= node[:meniscus][:coordinator_db_password] %>
 
 #datastore for short term storage of log messages before dispatching to sinks
 [short_term_store]
-adapter_name = <%= @short_term_store_adapter_name %>
-active = <%= @short_term_store_active %>
-servers = <%= @short_term_store_servers %>
-database = <%= @short_term_store_database %>
-username = <%= @short_term_store_username %>
-password = <%= @short_term_store_password %>
+adapter_name = <%= node[:meniscus][:short_term_store_adapter_name] %>
+active = <%= node[:meniscus][:short_term_store_active] %>
+servers = <%= node[:meniscus][:short_term_store_servers] %>
+database = <%= node[:meniscus][:short_term_store_database] %>
+username = <%= node[:meniscus][:short_term_store_username] %>
+password = <%= node[:meniscus][:short_term_store_password] %>
 
 
 #List of valid sinks for log messages
 [data_sinks]
-valid_sinks = <%= @data_sinks_valid_sinks %>
-default_sink = <%= @data_sinks_default_sink %>
+valid_sinks = <%= node[:meniscus][:data_sinks_valid_sinks] %>
+default_sink = <%= node[:meniscus][:data_sinks_default_sink] %>
 
 #connection parameters for default sink
 [default_sink]
-adapter_name = <%= @default_sink_adapter_name %>
-active = <%= @default_sink_active %>
-servers = <%= @default_sink_servers %>
-index = <%= @default_sink_index %>
-bulk_size = <%= @default_sink_bulk_size %>
+adapter_name = <%= node[:meniscus][:default_sink_adapter_name] %>
+active = <%= node[:meniscus][:default_sink_active] %>
+servers = <%= node[:meniscus][:default_sink_servers] %>
+index = <%= node[:meniscus][:default_sink_index] %>
+bulk_size = <%= node[:meniscus][:default_sink_bulk_size] %>
 #ttl is specified in days
-ttl = <%= @default_sink_ttl %>
+ttl = <%= node[:meniscus][:default_sink_ttl] %>
 
 
 #connection arguments for HDFS sink (connecting through WebHDFS Rest API)
 [hdfs_sink]
-host = <%= @hdfs_sink_hostname %>
-port = <%= @hdfs_sink_port %>
-user_name = <%= @hdfs_sink_user_name %>
-base_directory = <%= @hdfs_sink_base_directory %>
-transaction_expire = <%= @hdfs_sink_transaction_expire %>
-transfer_frequency = <%= @hdfs_sink_transfer_frequency %>
+host = <%= node[:meniscus][:hdfs_sink_hostname] %>
+port = <%= node[:meniscus][:hdfs_sink_port] %>
+user_name = <%= node[:meniscus][:hdfs_sink_user_name] %>
+base_directory = <%= node[:meniscus][:hdfs_sink_base_directory] %>
+transaction_expire = <%= node[:meniscus][:hdfs_sink_transaction_expire]%>
+transfer_frequency = <%= node[:meniscus][:hdfs_sink_transfer_frequency] %>
 
 
 #celery configuration for Worker nodes to queue tasks locally
 [celery]
-BROKER_URL = <%= @celery_broker_url %>
-CELERYD_CONCURRENCY = <%= @celery_concurrency %>
-CELERY_DISABLE_RATE_LIMITS = <%= @celery_disable_rate_limits %>
-CELERY_TASK_SERIALIZER = <%= @celery_task_serializer %>
+BROKER_URL = <%= node[:meniscus][:celery_broker_url] %>
+CELERYD_CONCURRENCY = <%= node[:meniscus][:celery_concurrency] %>
+CELERY_DISABLE_RATE_LIMITS = <%= node[:meniscus][:celery_disable_rate_limits] %>
+CELERY_TASK_SERIALIZER = <%= node[:meniscus][:celery_task_serializer] %>
 
 #UWSGI local cache settings
 [cache]
-default_expires = <%= @uwsgi_cache_expires %>
+default_expires = <%= node[:meniscus][:uwsgi_cache_expires] %>
 config_expires = 0
 cache_config = 'cache-config'
 cache_tenant = 'cache-tenant'
@@ -69,13 +76,15 @@ cache_token = 'cache-token'
 
 #directory for loading JSON Schema definitions used for API request validation
 [json_schema]
-schema_dir = <%= @schema_dir %>
+schema_dir = <%= node[:meniscus][:json_schema_dir] %>
 
 # Directory for loading normalization rules
 [liblognorm]
-rules_dir = <%= @liblognorm_rules_dir %>
+rules_dir = <%= node[:meniscus][:liblognorm_rules_dir] %>
 
 # Examples: eth0, eth1, eth2, wlan0, wlan1, wifi0, ath0, ath1, ppp0
 [network_interface]
-default_ifname = <%= @default_ifname %>
+default_ifname = <%= node[:meniscus][:default_ifname] %>
 
+[zmq_in]
+zmq_upstream_hosts = <%= node[:meniscus][:zmq_upstream_hosts] %>

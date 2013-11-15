@@ -1,9 +1,7 @@
-default[:meniscus][:personality] = "cbootstrap"
-default[:meniscus][:paired] = false
+default[:meniscus][:personality] = "worker"
 default[:meniscus][:cluster_name] = "meniscus"
 default[:meniscus][:port] = "8080"
 default[:meniscus][:syslog_port] = "5140"
-default[:meniscus][:auto_upgrade] = false
 
 default[:meniscus][:pynopath] = "/usr/share/meniscus/lib/python"
 default[:meniscus][:config_file]= "/etc/meniscus/meniscus.conf"
@@ -11,10 +9,10 @@ default[:meniscus][:config_file]= "/etc/meniscus/meniscus.conf"
 default[:meniscus][:log_debug] = true
 default[:meniscus][:log_file] = "/var/log/meniscus/meniscus.log"
 
-default[:meniscus][:coordinator_uri] = "localhost"
+default[:meniscus][:coordinator_uri] = "http://localhost:8080/v1"
 
 default[:meniscus][:coordinator_db_databag_item] = "configdb"
-default[:meniscus][:coordinator_db_cluster_name] = "" 
+default[:meniscus][:coordinator_db_cluster_name] = "configdb" 
 default[:meniscus][:coordinator_db_adapter_name] = "mongodb"
 default[:meniscus][:coordinator_db_active] = true
 default[:meniscus][:coordinator_db_servers] = "localhost:27017"
@@ -50,11 +48,12 @@ default[:meniscus][:hdfs_sink_transfer_frequency] = 60
 
 default[:meniscus][:celery_broker_url] = "librabbitmq://guest:guest@localhost:5672//"
 default[:meniscus][:celery_concurrency] = "7"
-default[:meniscus][:celery_disbale_rate_limits] = true
+default[:meniscus][:celery_disable_rate_limits] = true
 default[:meniscus][:celery_task_serializer] = "json"
 
+default[:meniscus][:uwsgi_socket] = "#{node[:ipaddress]}:#{node[:meniscus][:port]}"
 default[:meniscus][:uwsgi_protocol] = "http"
-default[:meniscus][:uwsgi_processes] = "7"
+default[:meniscus][:uwsgi_processes] = "4"
 default[:meniscus][:uwsgi_cache_expires] = 900
 
 default[:meniscus][:json_schema_dir] = "/etc/meniscus/schemas/"
@@ -64,5 +63,8 @@ default[:meniscus][:default_ifname] = "eth0"
 default[:meniscus][:uwsgi_config_cache_items] = 10
 default[:meniscus][:uwsgi_tenant_cache_items] = 1000
 default[:meniscus][:uwsgi_token_cache_items] = 1000
+
+default[:meniscus][:zmq_upstream_hosts] = "127.0.0.1:5000"
+
 
 
