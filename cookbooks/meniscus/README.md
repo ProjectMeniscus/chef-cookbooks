@@ -7,7 +7,7 @@ For more information on [Project Meniscus](http://projectmeniscus.org/)
 
 Requirements
 ------------
-Chef 10.18.2 
+Chef 11.0 
 
 Platform
 --------
@@ -16,13 +16,13 @@ Platform
 Tested on:
 - Ubuntu 12.04
 
-Cookbooks
----------
-Requires `apt` - mmongo uses the apt cookbook to configure the 10gen apt-get repository
 
-Tested with:
-`apt` [cookbook](https://github.com/opscode-cookbooks/apt/commit/b58c75536300794e5b5ffa8747fc9e6c48a4e5ce) release v2.1.1
-
+Recipes
+--------
+default - installs the meniscus appplication with default values
+persona_worker - configures the meniscus application with settings for a worker node
+persona_coordinator - configures the meniscus application with settings for a coordinator node
+search_discovery - uses chef search to populate attributes when automating clustering
 
 Attributes
 ----------
@@ -126,7 +126,7 @@ License & Authors
 - Author:: Steven Gonzales (steven.gonzales@RACKSPACE.COM)
 
 ```text
-Copyright:: 2009-2013 Opscode, Inc
+Copyright:: 2009-2013 Rackpsace Hosting
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,0 +1,11 @@
+site :opscode
+
+metadata
+
+cookbook 'apt'
+cookbook 'python'
+cookbook 'rabbitmq'
+
+cookbook 'liblognorm', github: 'ProjectMeniscus/chef-liblognorm'
+cookbook 'libzmq', github: 'ProjectMeniscus/chef-libzmq'
+
