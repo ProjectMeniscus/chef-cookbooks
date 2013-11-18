@@ -58,7 +58,7 @@ if node[:meniscus][:short_term_store_active]
 end
 
 if node[:meniscus][:personality] == "worker"
-	portal_nodes = es_nodes = search(:node, "chef_environment:#{node.environment} AND meniscus_personality:portal")
+	portal_nodes = search(:node, "chef_environment:#{node.environment} AND meniscus_personality:portal")
 	zmq_hosts = []
 	portal_nodes.each do |portal_node|
 		zmq_hosts.push([portal_node[:meniscus_portal][:zmq_bind_host], portal_node[:meniscus_portal][:zmq_bind_port]].join(':')) 
