@@ -2,7 +2,7 @@
 # Cookbook Name:: syslogng-transport
 # Recipe:: default
 #
-# Copyright (C) 2013 Steven Gonzales
+# Copyright (C) 2013 Rackspace Hosting
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
