@@ -1,0 +1,6 @@
+site :opscode
+
+metadata
+
+cookbook 'libzmq', github: 'ProjectMeniscus/chef-libzmq'
+
