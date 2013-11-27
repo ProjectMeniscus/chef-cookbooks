@@ -10,5 +10,7 @@ cookbook 'base-template', path: '../base-template'
 
 cookbook 'liblognorm', github: 'ProjectMeniscus/chef-liblognorm'
 cookbook 'libzmq', github: 'ProjectMeniscus/chef-libzmq'
+cookbook 'meetme-newrelic-plugin', github: 'ProjectMeniscus/chef-meetme-newrelic-plugin'
+
 
 cookbook 'meniscus', path: '../meniscus'

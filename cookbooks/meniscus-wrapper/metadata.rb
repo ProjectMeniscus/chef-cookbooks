@@ -8,3 +8,4 @@ version          '0.1.1'
 
 depends 'base-template'
 depends 'meniscus'
+depends 'meetme-newrelic-plugin'
