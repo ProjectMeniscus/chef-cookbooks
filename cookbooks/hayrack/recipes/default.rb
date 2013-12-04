@@ -19,20 +19,20 @@
 
 include_recipe 'apt'
 
-#Add Meniscus-portal repository
+#add Project Meniscus repository
 apt_repository "ProjectMeniscus" do
   uri "http://debrepo.projectmeniscus.org"
   distribution "squeeze"
   components ["main"]
 end
 
-#install meniscus-portal from repo
+#install hayrack from repo
 package "hayrack" do
   action :install
   options "--force-yes"
 end
 
-#write portal config file
+#write hayrack config file
 template "/etc/hayrack/hayrack.conf" do
   source "hayrack.conf.erb"
   owner "hayrack"
