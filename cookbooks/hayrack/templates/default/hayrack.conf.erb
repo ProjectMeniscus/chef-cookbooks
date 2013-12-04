@@ -1,0 +1,22 @@
+[core]
+
+#the host, port for the zmq socket to bind to
+zmq_bind_host = <%= node[:hayrack][:zmq_bind_host] %>
+zmq_bind_port = <%= node[:hayrack][:zmq_bind_port] %>
+
+#the ZMQ high water mark, controls how many messages
+#are buffered before ZMQ send blocks
+zmq_hwm = <%= node[:hayrack][:zmq_hwm] %>
+
+#deterines how many milliseconds to wait to process messages
+#before socket is closed, the default of -1 waits infinitely
+zmq_linger = <%= node[:hayrack][:zmq_linger] %>
+
+[logging]
+console = <%= node[:hayrack][:console] %>
+<% if node[:hayrack][:logfile].empty? %>
+#logfile =  %>
+<% else %>
+logfile = <%= node[:hayrack][:logfile] %>
+<% end %>
+verbosity = <%= node[:hayrack][:log_verbosity] %>
