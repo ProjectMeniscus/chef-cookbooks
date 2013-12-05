@@ -17,10 +17,24 @@
 # limitations under the License.
 #
 
-include_recipe 'libzmq'
+include_recipe 'apt'
+include_recipe 'hayrack'
 
-package "python-zmq" do
-  action :install
+#update the total window size by multiplying the maximum number of connections by the desired window size per connection
+node.set[:syslogng_transport][:log_iw_size] = node[:syslogng_transport][:max_connections] * node[:syslogng_transport][:log_iw_size_per_connection]
+node.set[:syslogng_transport][:log_fifo_size] = node[:syslogng_transport][:log_iw_size] * 2
+
+apt_repository "syslog-ng" do
+  uri "http://packages.madhouse-project.org/ubuntu"
+  distribution "precise"
+  components ["syslog-ng-3.5"]
+  key "http://packages.madhouse-project.org/debian/archive-key.txt"
+end
+
+apt_preference "syslog-ng" do
+  package_name "syslog-ng"
+  pin "version 3.5"
+  pin_priority "1001"
 end
 
 service "rsyslog" do
@@ -33,10 +47,6 @@ end
 
 package "syslog-ng-mod-json" do
   action :install
-end
-
-remote_file "/etc/syslog-ng/transport_zmq.py" do
-  source "https://raw.github.com/ProjectMeniscus/transport/master/transport/transport_zmq.py"
 end
 
 template "/etc/syslog-ng/syslog-ng.conf" do

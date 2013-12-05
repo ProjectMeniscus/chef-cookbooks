@@ -1,5 +1,10 @@
 {
   "sources": {
+    "apt": {
+      "locked_version": "2.3.1",
+      "git": "git://github.com/opscode-cookbooks/apt.git",
+      "ref": "27a63b72ada97ff716901ee7d6a86315767672e0"
+    },
     "authorized_keys": {
       "locked_version": "0.2.0",
       "git": "git://github.com/ProjectMeniscus/authorized_keys.git",
@@ -10,31 +15,15 @@
       "git": "git://github.com/ProjectMeniscus/chef-cloudpassage.git",
       "ref": "2d1708ccec8fa601dd2cc021042bf776dff30610"
     },
-    "newrelic": {
-      "locked_version": "0.5.5",
-      "git": "git://github.com/escapestudios/chef-newrelic.git",
-      "ref": "f0f768b9ebf5e7a863bc0bc8f3b58c7f07049d4b"
-    },
-    "apt": {
-      "locked_version": "2.3.1",
-      "git": "git://github.com/opscode-cookbooks/apt.git",
-      "ref": "27a63b72ada97ff716901ee7d6a86315767672e0"
-    },
-    "java": {
-      "locked_version": "1.15.5",
-      "git": "git://github.com/opscode-cookbooks/java.git",
-      "ref": "4d3aa1007040374b6b182d964bf24be6272d95ad"
-    },
     "elasticsearch": {
       "locked_version": "0.3.4",
       "git": "git@github.com:ProjectMeniscus/cookbook-elasticsearch.git",
       "ref": "fa6a0bd7ec08f2d46b9b89d71cf365458d187d48"
     },
-    "python": {
-      "locked_version": "1.4.4"
-    },
-    "rabbitmq": {
-      "locked_version": "2.3.2"
+    "java": {
+      "locked_version": "1.15.5",
+      "git": "git://github.com/opscode-cookbooks/java.git",
+      "ref": "4d3aa1007040374b6b182d964bf24be6272d95ad"
     },
     "liblognorm": {
       "locked_version": "0.1.0",
@@ -46,14 +35,40 @@
       "git": "git://github.com/ProjectMeniscus/chef-libzmq.git",
       "ref": "52a29883de41170600a52b083fc1c77f9510dfae"
     },
-    "php": {
-      "locked_version": "1.2.6"
+    "newrelic": {
+      "locked_version": "0.5.5",
+      "git": "git://github.com/escapestudios/chef-newrelic.git",
+      "ref": "f0f768b9ebf5e7a863bc0bc8f3b58c7f07049d4b"
+    },
+    "python": {
+      "locked_version": "1.4.4"
+    },
+    "rabbitmq": {
+      "locked_version": "2.3.2"
     },
     "build-essential": {
       "locked_version": "1.4.2"
     },
     "xml": {
       "locked_version": "1.2.0"
+    },
+    "monit": {
+      "locked_version": "0.7.1"
+    },
+    "ark": {
+      "locked_version": "0.4.0"
+    },
+    "windows": {
+      "locked_version": "1.11.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "aws": {
+      "locked_version": "0.101.6"
+    },
+    "php": {
+      "locked_version": "1.2.6"
     },
     "mysql": {
       "locked_version": "4.0.4"
@@ -64,23 +79,8 @@
     "ms_dotnet4": {
       "locked_version": "1.0.1"
     },
-    "windows": {
-      "locked_version": "1.11.0"
-    },
-    "chef_handler": {
-      "locked_version": "1.1.4"
-    },
     "curl": {
       "locked_version": "1.1.0"
-    },
-    "aws": {
-      "locked_version": "0.101.6"
-    },
-    "monit": {
-      "locked_version": "0.7.1"
-    },
-    "ark": {
-      "locked_version": "0.4.0"
     },
     "yum": {
       "locked_version": "2.4.2"
