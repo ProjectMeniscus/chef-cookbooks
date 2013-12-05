@@ -15,7 +15,7 @@ zmq_linger = <%= node[:hayrack][:zmq_linger] %>
 [logging]
 console = <%= node[:hayrack][:console] %>
 <% if node[:hayrack][:logfile].empty? %>
-#logfile =  %>
+#logfile =
 <% else %>
 logfile = <%= node[:hayrack][:logfile] %>
 <% end %>
