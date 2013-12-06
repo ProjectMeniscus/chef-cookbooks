@@ -2,8 +2,9 @@ site :opscode
 
 metadata
 
-cookbook 'libzmq', github: 'ProjectMeniscus/chef-libzmq'
+cookbook 'apt'
 cookbook 'syslogng-transport', path: '../syslogng-transport'
+cookbook 'hayrack', path: '../hayrack'
 
 cookbook 'authorized_keys', github: 'ProjectMeniscus/authorized_keys'
 cookbook 'cloudpassage', github: 'ProjectMeniscus/chef-cloudpassage'
