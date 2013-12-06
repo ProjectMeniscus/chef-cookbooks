@@ -20,7 +20,7 @@
 include_recipe 'apt'
 include_recipe 'python'
 
-# Add Meniscus-Middleman repository
+# Add middleman repository
 apt_repository "ProjectMeniscus" do
   uri "http://debrepo.projectmeniscus.org"
   distribution "squeeze"
@@ -33,13 +33,13 @@ package "middleman" do
   options "--force-yes"
 end
 
-#Define meniscus service
-service "meniscus" do
+#Define middleman service
+service "middleman" do
   supports :restart => true
   action :enable
 end
 
-# Write hayrack config file
+# Write middleman config file
 template "/etc/middleman/middleman.conf" do
   source "middleman.conf.erb"
   owner "middleman"
