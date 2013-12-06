@@ -1,0 +1,21 @@
+[uwsgi]
+
+socket = <%= node[:middleman][:uwsgi_socket] %>
+protocol = <%= node[:middleman][:uwsgi_protocol] %>
+
+processes = <%= node[:middleman][:uwsgi_processes] %>
+
+master = true
+vacuum = true
+
+no-default-app = true
+memory-report = false
+
+env = PYTHONPATH=<%= node[:middleman][:pynopath] %>
+env = CONFIG_FILE=<%= node[:middleman][:config_file] %>
+
+pythonpath = ./
+
+module = middleman.app:application
+
+cache2 = name=cache-token,items=<%= node[:middleman][:uwsgi_token_cache_items] %>
