@@ -15,7 +15,7 @@ default[:middleman][:cache_name] = 'cache-token'
 default[:middleman][:ttl] = 3600
 
 # uwsgi.ini attributes
-default[:middleman][:uwsgi_socket] = '#{node[:ipaddress]}:#{node[:middleman][:port]}'
+default[:middleman][:uwsgi_socket] = '0.0.0.0:9200'
 default[:middleman][:uwsgi_protocol] = 'http'
 default[:middleman][:uwsgi_processes] = 12
 default[:middleman][:uwsgi_cache_expires] = 3600
