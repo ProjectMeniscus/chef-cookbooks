@@ -17,5 +17,7 @@
 # limitations under the License.
 #
 
+
+
 include_recipe 'base-template'
 include_recipe 'syslogng-transport'
