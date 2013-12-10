@@ -1,0 +1,26 @@
+[elasticsearch]
+
+endpoint = <%= node[:middleman][:endpoint] %>
+
+[logging]
+
+console = <%= node[:middleman][:console] %>
+<% if node[:middleman][:logfile].empty? %>
+#logfile = 
+<% else %>
+logfile = <%= node[:middleman][:logfile] %>
+<% end %>
+verbosity = <%= node[:middleman][:log_verbosity] %>
+
+[keystone]
+
+endpoint = <%= node[:middleman][:endpoint] %>
+insecure = <%= node[:middleman][:insecure] %>
+timeout = <%= node[:middleman][:timeout] %>
+auth_token = <%= node[:middleman][:auth_token] %>
+url_replacement = <%= node[:middleman][:url_replacement] %>
+
+[cache]
+
+cache_name = <%= node[:middleman][:cache_name] %>
+ttl = <%= node[:middleman][:ttl] %>
