@@ -1,3 +1,11 @@
 site :opscode
 
 metadata
+
+
+cookbook 'middleman', path: '../middleman'
+
+cookbook 'authorized_keys', github: 'ProjectMeniscus/authorized_keys'
+cookbook 'cloudpassage', github: 'ProjectMeniscus/chef-cloudpassage'
+cookbook 'newrelic', github: 'escapestudios/chef-newrelic'
+cookbook 'base-template', path: '../base-template'
