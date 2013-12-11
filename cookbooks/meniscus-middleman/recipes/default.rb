@@ -17,5 +17,8 @@
 # limitations under the License.
 #
 
+middleman_settings = data_bag_item(node.chef_environment, node[:middleman][:databag_item])
+node.set[:middleman][:auth_token] = middleman_settings[:auth_token]
+
 include_recipe 'base-template'
 include_recipe "middleman"
