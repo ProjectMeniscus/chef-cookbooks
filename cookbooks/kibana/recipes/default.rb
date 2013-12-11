@@ -21,12 +21,6 @@ include_recipe "apt"
 include_recipe "git"
 include_recipe "nginx"
 
-unless Chef::Config[:solo]
-  es_server_results = search(:node, "roles:#{node['kibana']['es_role']} AND chef_environment:#{node.chef_environment}")
-  unless es_server_results.empty?
-    node.set['kibana']['proxy_server'] = es_server_results[0]['ipaddress']
-  end
-end
 
 if node['kibana']['user'].empty?
   webserver = node['kibana']['webserver']
