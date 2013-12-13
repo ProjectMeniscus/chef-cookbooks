@@ -11,10 +11,8 @@ default['kibana']['webserver_listen'] = node.ipaddress
 default['kibana']['webserver_port'] = 80
 
 # elasticsearch attributes
-default['kibana']['proxy_server'] = "localhost"
-default['kibana']['proxy_port'] = 9200
-default['kibana']['es_role'] = "elasticsearch_server"
+default['kibana']['proxy_endpoint'] = "http://localhost:9200"
 
 #keystone attributes
-default['kibana']['keystone_server'] = "localhost"
-default['kibana']['keystone_port'] = 5000
+default['kibana']['keystone_endpoint'] = "https://localhost:35357/v2.0"
+

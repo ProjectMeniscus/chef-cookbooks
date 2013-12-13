@@ -1,38 +1,38 @@
 server {
-  listen                <%= @listen_address %>:<%= @listen_port %>;
+  listen                <%= node['kibana']['webserver_listen'] %>:<%= node['kibana']['webserver_port'] %>;
   
-  server_name           <%= @server_name %> <%= @server_aliases.join(" ") %>;
-  access_log            /var/log/nginx/<%= @server_name %>.access.log;
+  server_name           <%= node['kibana']['webserver_hostname'] %> <%= node['kibana']['webserver_aliases'].join(" ") %>;
+  access_log            /var/log/nginx/<%= node['kibana']['webserver_hostname'] %>.access.log;
 
   location / {
-    root  <%= @kibana_dir %>/current;
+    root  <%= node['kibana']['installdir'] %>/current;
     index  index.html  index.htm; 
   }
 
   location /v1/auth {
     include /etc/nginx/mime.types;
-    proxy_pass http://<%= @keystone_server %>:<%= @keystone_port %>/v2.0/tokens;
+    proxy_pass <%= node['kibana']['keystone_endpoint'] %>/tokens;
     proxy_read_timeout 90;
   }
   location ~ ^/_aliases$ {
-    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
+    proxy_pass <%= node['kibana']['proxy_endpoint'] %>;
     proxy_read_timeout 90;
   }
   location ~ ^/.*/_search$ {
-    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
+    proxy_pass <%= node['kibana']['proxy_endpoint'] %>;
     proxy_read_timeout 90;
   }
   location ~ ^/.*/_mapping$ {
-    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
+    proxy_pass <%= node['kibana']['proxy_endpoint'] %>;
     proxy_read_timeout 90;
   }
   # Password protected end points
   location ~ ^/kibana-int/dashboard/.*$ {
-    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
+    proxy_pass <%= node['kibana']['proxy_endpoint'] %>;
     proxy_read_timeout 90;
   }
   location ~ ^/kibana-int/temp.*$ {
-    proxy_pass http://<%= @pyrox_server %>:<%= @pyrox_port %>;
+    proxy_pass <%= node['kibana']['proxy_endpoint'] %>;
     proxy_read_timeout 90;
   }
 }
