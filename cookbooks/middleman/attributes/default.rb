@@ -17,6 +17,11 @@ default[:middleman][:ttl] = 3600
 # uwsgi.ini attributes
 default[:middleman][:uwsgi_socket] = '0.0.0.0:9200'
 default[:middleman][:uwsgi_protocol] = 'http'
-default[:middleman][:uwsgi_processes] = 12
+default[:middleman][:uwsgi_processes] = 4
 default[:middleman][:uwsgi_cache_expires] = 3600
 default[:middleman][:uwsgi_token_cache_items] = 1000
+
+default[:middleman][:request_timeout] = 15
+
+default[:middleman][:pynopath] = "/usr/share/middleman/lib/python"
+default[:middleman][:config_file] = "/etc/middleman/middleman.conf"

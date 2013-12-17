@@ -20,5 +20,13 @@
 middleman_settings = data_bag_item(node.chef_environment, node[:middleman][:databag_item])
 node.set[:middleman][:auth_token] = middleman_settings[:auth_token]
 
+haproxy_nodes = search(:node, "chef_environment:#{node.environment} AND meniscus_personality:haproxy")
+if haproxy_nodes.length() > 0
+	haproxy_node = haproxy_nodes[0]
+	haproxy_ip = haproxy_node[:rackspace][:private_ip]
+	haproxy_port = haproxy_node[:haproxy][:incoming_port]
+	node.set[:middleman][:elasticsearch_endpoint] = "http://#{haproxy_ip}:#{haproxy_port}/"
+end
+
 include_recipe 'base-template'
-include_recipe "middleman"
+include_recipe 'middleman'

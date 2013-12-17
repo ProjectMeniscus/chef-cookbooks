@@ -42,8 +42,16 @@ git "#{node['kibana']['installdir']}/#{node['kibana']['branch']}" do
   user kibana_user
 end
 
+template "#{node['kibana']['installdir']}/#{node['kibana']['branch']}/src/config.js" do
+  source "config.js.erb"
+   mode "0750"
+  user kibana_user
+end
+
 link "#{node['kibana']['installdir']}/current" do
   to "#{node['kibana']['installdir']}/#{node['kibana']['branch']}/src"
 end
+
+
 
 include_recipe "kibana::#{node['kibana']['webserver']}"

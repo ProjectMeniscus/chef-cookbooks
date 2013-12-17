@@ -17,5 +17,6 @@
 # limitations under the License.
 #
 
-include_recipe 'base_template'
+include_recipe 'base-template'
+include_recipe 'meniscus-middleman'
 include_recipe 'kibana'

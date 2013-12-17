@@ -1,6 +1,7 @@
 [elasticsearch]
 
-endpoint = <%= node[:middleman][:endpoint] %>
+endpoint = <%= node[:middleman][:elasticsearch_endpoint] %>
+timeout = <%= node[:middleman][:request_timeout] %>
 
 [logging]
 
@@ -14,7 +15,7 @@ verbosity = <%= node[:middleman][:log_verbosity] %>
 
 [keystone]
 
-endpoint = <%= node[:middleman][:endpoint] %>
+endpoint = <%= node[:middleman][:keystone_endpoint] %>
 insecure = <%= node[:middleman][:insecure] %>
 timeout = <%= node[:middleman][:timeout] %>
 auth_token = <%= node[:middleman][:auth_token] %>
