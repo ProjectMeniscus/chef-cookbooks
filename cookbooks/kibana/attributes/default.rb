@@ -9,7 +9,6 @@ default['kibana']['webserver_hostname'] = node.name
 default['kibana']['webserver_aliases'] = [node.ipaddress]
 default['kibana']['webserver_listen'] = node.ipaddress
 default['kibana']['webserver_port'] = 80
-
 # elasticsearch attributes
 default['kibana']['proxy_endpoint'] = "http://localhost:9200"
 

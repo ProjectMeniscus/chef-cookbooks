@@ -1,2 +1,3 @@
-normal[:cloudpassage][:server_tag] = "#{node.environment}-middleman"
-normal[:middleman][:uwsgi_socket] = "#{node[:rackspace][:private_ip]}:9200"
+default[:middleman][:databag_item] = "middleman"
+normal[:middleman][:uwsgi_socket] = "127.0.0.1:9200"
+normal[:middleman][:request_timeout] = 30

@@ -3,6 +3,7 @@ site :opscode
 metadata
 
 cookbook 'kibana', path: '../kibana'
+cookbook 'meniscus-middleman', path: '../meniscus-middleman'
 
 cookbook 'authorized_keys', github: 'ProjectMeniscus/authorized_keys'
 cookbook 'cloudpassage', github: 'ProjectMeniscus/chef-cloudpassage'
