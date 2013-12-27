@@ -17,3 +17,4 @@ include_recipe "java"
 include_recipe "elasticsearch::search_discovery"
 include_recipe "elasticsearch"
 include_recipe "elasticsearch::plugins"
+include_recipe 'meetme-newrelic-plugin::elasticsearch'

@@ -40,19 +40,13 @@ chef_gem "mongo" do
   version '1.8.6'
 end
 
-mongo_settings = data_bag_item(node.chef_environment, node[:mmongo][:databag_item])
-key = mongo_settings["key"]
-
 template node[:mmongo][:keyfile] do
     source "keyfile.erb"
     owner "mongodb"
     mode "0600"
-    variables(
-      :key => key
-    )
 end
 
-node.set[:mmongo][:replset_name] = mongo_settings["replset_name"]
+Chef::Log.warn("mmongo bind_host: #{node[:mmongo][:bind_host]}")
 #searching for existing nodes in replset, only possible with Chef Server, not with Chef Solo
 if Chef::Config[:solo]
   Chef::Log.warn("This recipe requires Chef Server to join replsets. This node will start as new replset")
@@ -62,7 +56,7 @@ else
   db_nodes = search(:node, "mmongo_replset_name:#{node[:mmongo][:replset_name]}")
   db_ip = []
   db_nodes.each do |db_node|
-    db_ip.push(db_node[:rackspace][:private_ip])
+    db_ip.push(db_node[:mmongo][:bind_host])
   end
 
 end
@@ -109,7 +103,7 @@ if db_nodes.empty?
       cmd = BSON::OrderedHash.new
       cmd['replSetInitiate'] = { '_id' => node[:mmongo][:replset_name], 
                                  'members' => [ { '_id' => 0, 
-                                                  'host' => [node[:rackspace][:private_ip], 
+                                                  'host' => [node[:mmongo][:bind_host], 
                                                              node[:mmongo][:port]].join(':') } ] }
       db.command(cmd)
     end
@@ -129,10 +123,10 @@ if db_nodes.empty?
       client = Mongo::MongoClient.new('localhost', node[:mmongo][:port])  
      
       db = client.db('admin')
-      db.add_user(mongo_settings["admin_user"], mongo_settings["admin_pass"])
+      db.add_user(node[:mmongo][:admin_user], node[:mmongo][:admin_pass])
 
-      db = client.db('meniscus')
-      db.add_user(mongo_settings["meniscus_user"], mongo_settings["meniscus_pass"])
+      db = client.db(node[:mmongo][:database])
+      db.add_user(node[:mmongo][:db_user], node[:mmongo][:db_pass])
 
     end
   end
@@ -149,7 +143,7 @@ if db_nodes.empty?
     action :restart
   end
 
-elsif not db_ip.include? node[:rackspace][:private_ip]
+elsif not db_ip.include? node[:mmongo][:bind_host]
 
   template "/etc/mongodb.conf" do
     source "mongodb.conf.erb"
@@ -177,11 +171,11 @@ elsif not db_ip.include? node[:rackspace][:private_ip]
 
       repl_node = db_nodes[0]
       client = Mongo::MongoReplicaSetClient.new([
-                   [ repl_node[:rackspace][:private_ip], 
+                   [ repl_node[:mmongo][:bind_host], 
                      repl_node[:mmongo][:port] ].join(':')
                ])
 
-      client.add_auth("admin", mongo_settings["admin_user"], mongo_settings["admin_pass"])
+      client.add_auth("admin", node[:mmongo][:admin_user], node[:mmongo][:admin_pass])
       client.apply_saved_authentication()
 
       if !client.primary?
@@ -192,7 +186,7 @@ elsif not db_ip.include? node[:rackspace][:private_ip]
       config = client.db('local').collection('system.replset').find_one
       config['version'] += 1
       config['members'] << { '_id' => config['members'].size, 
-                             'host' => [node[:rackspace][:private_ip], node[:mmongo][:port]].join(':') }
+                             'host' => [node[:mmongo][:bind_host], node[:mmongo][:port]].join(':') }
       cmd = BSON::OrderedHash.new
       cmd['replSetReconfig'] = config
       db = client.db('admin')
