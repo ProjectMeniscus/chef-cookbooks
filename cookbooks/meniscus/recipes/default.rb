@@ -44,6 +44,7 @@ end
 
 #Define meniscus service
 service "meniscus" do
+  provider Chef::Provider::Service::Upstart
   supports :restart => true
   action :enable
 end
