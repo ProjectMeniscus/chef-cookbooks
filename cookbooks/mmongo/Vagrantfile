@@ -8,12 +8,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.hostname = "mmongo-berkshelf"
 
-  # Every Vagrant virtual environment requires a box to build off of.
+   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box_url = "http://acc22a19bc318afc0ac4-2cdbfc3810207176667868d343dae57a.r98.cf2.rackcdn.com/vbox4.3.2-ruby1.9.3-chef11.6-precise64.box"
 
   # Assign this VM to a host-only network IP, allowing you to access it
   # via the IP. Host-only networks can talk to the host machine as well as
@@ -51,9 +51,6 @@ Vagrant.configure("2") do |config|
   #
   # View the documentation for the provider you're using for more
   # information on available options.
-
-  config.ssh.max_tries = 40
-  config.ssh.timeout   = 120
 
   # The path to the Berksfile to use with Vagrant Berkshelf
   # config.berkshelf.berksfile_path = "./Berksfile"
