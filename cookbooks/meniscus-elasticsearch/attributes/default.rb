@@ -58,3 +58,8 @@ normal.elasticsearch[:custom_config] = {
 
 }
 
+#Settings for newrelic monitoring
+normal[:meetme_newrelic_plugin][:elasticsearch][:clustername] = node[:elasticsearch][:cluster][:name]
+normal[:meetme_newrelic_plugin][:elasticsearch][:host] = "localhost"
+normal[:meetme_newrelic_plugin][:elasticsearch][:port] = node[:elasticsearch][:http][:port]
+normal[:meetme_newrelic_plugin][:elasticsearch][:scheme] = "http"
