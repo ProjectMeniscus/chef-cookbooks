@@ -1,0 +1,84 @@
+{
+  "name": "meniscus_prod_ord",
+  "description": "",
+  "cookbook_versions": {
+    "cloudpassage": "= 0.1.7",
+    "meniscus": "= 0.2.4",
+    "meniscus-configdb": "= 0.2.0",
+    "meniscus-syslog": "= 0.2.0",
+    "hayrack": "= 0.1.0",
+    "meniscus-middleman": "= 0.0.1",
+    "base-template": "= 0.1.2",
+    "authorized_keys": "= 0.2.0",
+    "java": "= 1.14.1",
+    "apt": "= 2.3.0",
+    "syslogng-transport": "= 0.2.0",
+    "kibana": "= 0.2.0",
+    "python": "= 1.4.4",
+    "meniscus-portal": "= 0.1.2",
+    "meniscus-kibana": "= 0.2.0",
+    "meniscus-wrapper": "= 0.1.2",
+    "middleman": "= 0.0.1",
+    "meniscus-elasticsearch": "= 0.1.7",
+    "meetme-newrelic-plugin": "= 0.2.4",
+    "elasticsearch": "= 0.3.4",
+    "mmongo": "= 0.2.0",
+    "newrelic": "= 0.5.5",
+    "rabbitmq": "= 2.3.1"
+  },
+  "json_class": "Chef::Environment",
+  "chef_type": "environment",
+  "default_attributes": {
+  },
+  "override_attributes": {
+    "meniscus": {
+      "default_sink_ttl": "90d",
+      "default_sink_bulk_size": 1000,
+      "log_debug": true,
+      "uwsgi_cache_expires": 3600,
+      "uwsgi_protocol": "http",
+      "uwsgi_tenant_cache_items": 1000,
+      "data_sinks_default_sink": "elasticsearch",
+      "coordinator_uri": "http://coordination.prod.ord.projectmeniscus.org:8080/v1",
+      "uwsgi_token_cache_items": 1000,
+      "default_ifname": "eth1",
+      "celery_broker_url": "librabbitmq://guest:guest@localhost:5672//",
+      "default_sink_index": "logs",
+      "syslog_port": 5140
+    },
+    "java": {
+      "jdk_version": "7"
+    },
+    "kibana": {
+      "keystone_endpoint": "https://keystone-stg.projectmeniscus.org:35357/v2.0"
+    },
+    "middleman": {
+      "keystone_endpoint": "https://keystone-stg.projectmeniscus.org:35357/v2.0"
+    },
+    "elasticsearch": {
+      "index": {
+        "number_of_shards": 12,
+        "number_of_replicas": 2,
+        "translog": {
+          "flush_threshold_ops": "50000",
+          "flush_threshold_period": "30m",
+          "flush_threshold_size": "200mb"
+        }
+      },
+      "indices": {
+        "ttl": {
+          "bulk_size": "10000",
+          "interval": "3600s"
+        },
+        "memory": {
+          "index_buffer_size": "50%"
+        },
+        "port": 9200
+      },
+      "gateway": {
+        "expected_nodes": 12,
+        "recover_after_nodes": 3
+      }
+    }
+  }
+}
