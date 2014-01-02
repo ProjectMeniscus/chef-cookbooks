@@ -46,7 +46,6 @@ end
 service "meniscus" do
   provider Chef::Provider::Service::Upstart
   supports :restart => true
-  action :enable
 end
 
 #create the meniscus configuration file
