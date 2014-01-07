@@ -8,7 +8,7 @@ normal[:blockstorage_lvm][:volume_size] = 1024
 normal[:blockstorage_lvm][:volume_group_name] = "vg00"
 normal[:blockstorage_lvm][:logical_volume_name] = "esvolume"
 normal[:blockstorage_lvm][:filesystem] = "ext4"
-normal[:blockstorage_lvm][:mount_pount] = "/usr/local/var/data/elasticsearch"
+normal[:blockstorage_lvm][:mount_point] = "/usr/local/var/data/elasticsearch"
 
 #elasticsearch settings
 override[:java][:jdk_version] = "7"
