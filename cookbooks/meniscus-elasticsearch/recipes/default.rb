@@ -12,6 +12,7 @@ gem_package "json" do
 end
 
 include_recipe "base-template"
+include_recipe "blockstorage-lvm"
 include_recipe "apt"
 include_recipe "java"
 include_recipe "elasticsearch::search_discovery"

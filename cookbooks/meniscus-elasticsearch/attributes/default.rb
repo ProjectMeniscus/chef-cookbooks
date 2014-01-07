@@ -1,4 +1,16 @@
+#configure cloudpassage groupnormal
 normal[:cloudpassage][:server_tag] = "#{node.environment}-elasticsearch"
+
+#provision Rackspace cloud block storage
+normal[:blockstorage_lvm][:no_volumes] = 2
+normal[:blockstorage_lvm][:volume_type] = "SATA"
+normal[:blockstorage_lvm][:volume_size] = 1024
+normal[:blockstorage_lvm][:volume_group_name] = "vg00"
+normal[:blockstorage_lvm][:logical_volume_name] = "esvolume"
+normal[:blockstorage_lvm][:filesystem] = "ext4"
+normal[:blockstorage_lvm][:mount_point] = "/usr/local/var/data/elasticsearch"
+
+#elasticsearch settings
 override[:java][:jdk_version] = "7"
 
 normal[:elasticsearch][:port] = "9200"
